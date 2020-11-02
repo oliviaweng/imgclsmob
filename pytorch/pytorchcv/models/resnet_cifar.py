@@ -347,6 +347,7 @@ def resnet20_cifar10(num_classes=10, **kwargs):
     root : str, default '~/.torch/models'
         Location for keeping the model parameters.
     """
+    print('getting resnet20 for cifar10')
     return get_resnet_cifar(num_classes=num_classes, blocks=20, bottleneck=False, model_name="resnet20_cifar10",
                             **kwargs)
 

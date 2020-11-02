@@ -13,6 +13,7 @@ from .metrics.seg_metrics import PixelAccuracyMetric, MeanIoUMetric
 from .metrics.det_metrics import CocoDetMApMetric
 from .metrics.hpe_metrics import CocoHpeOksApMetric
 
+from pytorch.pytorchcv.models.resnet_cifar import non_resnet20_cifar10
 
 def prepare_pt_context(num_gpus,
                        batch_size):
@@ -91,6 +92,10 @@ def prepare_model(model_name,
         kwargs.update(net_extra_kwargs)
 
     net = get_model(model_name, **kwargs)
+    # Build ResNet20 with shorter skip connection
+    # num_non_res = 0
+    # print('Build shorter skip resnet = ', num_non_res)
+    # net = non_resnet20_cifar10(num_non_res=num_non_res)
 
     if pretrained_model_file_path:
         assert (os.path.isfile(pretrained_model_file_path))

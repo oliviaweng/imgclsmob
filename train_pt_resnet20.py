@@ -24,7 +24,7 @@ from pytorch.dataset_utils import get_dataset_metainfo
 from pytorch.dataset_utils import get_train_data_source, get_val_data_source
 
 from eval_pt import test_non_model
-from pytorch.pytorchcv.models.resnet_cifar import non_resnet20_cifar10
+
 
 
 def add_train_cls_parser_arguments(parser):
@@ -617,10 +617,10 @@ def train_net(batch_size,
             opt_metric_name, lp_saver.best_eval_metric_value, lp_saver.best_eval_metric_epoch))
 
 
-def eval_model(test_model_args, num_non_res, net):
-    print('\n\n\nModel Accuracy for num_non_res = ', num_non_res)
-    test_non_model(test_model_args, net)
-    print('\n\n')
+# def eval_model(test_model_args, num_non_res, net):
+#     print('\n\n\nModel Accuracy for num_non_res = ', num_non_res)
+#     test_non_model(test_model_args, net)
+#     print('\n\n')
 
 
 def main():
@@ -711,11 +711,6 @@ def main():
     # Args needed to evaluate model accuracy
     # test_model_args = argparse.Namespace(all=False, batch_size=512, calc_flops=False, calc_flops_only=False, data_dir='/exdrive/resnet20-cifar10', data_subset='val', dataset='CIFAR10', disable_cudnn_autotune=False, in_channels=3, log_packages='torch, torchvision', log_pip_packages='', logging_file_name='train.log', model='resnet20_cifar10', num_classes=10, num_gpus=1, num_workers=4, remove_module=False, resume='', save_dir='', show_progress=False, use_pretrained=True, work_dir='../resnet20')
 
-    
-    # Build ResNet20 with shorter skip connection
-    # num_non_res = 0
-    # print('Build shorter skip resnet = ', num_non_res)
-    # net = non_resnet20_cifar10(num_non_res=num_non_res)
 
     print(net)
     # summary(net, (3, 32, 32))
@@ -725,7 +720,7 @@ def main():
         print('training using cuda = ', use_cuda)
         net.cuda()
 
-    print('\n\nTraining shorter skip resnet =', num_non_res)
+    print('\n\nTraining shorter skip resnet')
     train_net(
         batch_size=batch_size,
         num_epochs=args.num_epochs,

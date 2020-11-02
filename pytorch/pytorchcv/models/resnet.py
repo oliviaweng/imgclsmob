@@ -56,6 +56,8 @@ class ResBlock(nn.Module):
         if identity is not None:
             print('add shorter skip connection')
             x = x + identity # Shorter skip connection - LIV
+        else:
+            print('no skip connection to add')
         x = self.conv2(x)
         return x
 
