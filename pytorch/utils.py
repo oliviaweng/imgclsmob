@@ -168,11 +168,14 @@ def validate(metric,
     EvalMetric
         Metric object instance.
     """
+    print('evaluating')
     net.eval()
+    print('done eval')
     metric.reset()
     with torch.no_grad():
         for data, target in val_data:
             if use_cuda:
+                print('sending data to gpu')
                 target = target.cuda(non_blocking=True)
             output = net(data)
             metric.update(target, output)
