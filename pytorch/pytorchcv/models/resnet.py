@@ -38,6 +38,8 @@ class ResBlock(nn.Module):
                  bias=False,
                  use_bn=True):
         super(ResBlock, self).__init__()
+        self.resize_identity = (in_channels != out_channels) or (stride != 1)
+
         self.conv1 = conv3x3_block(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -50,9 +52,23 @@ class ResBlock(nn.Module):
             bias=bias,
             use_bn=use_bn,
             activation=None)
+        
+        if self.resize_identity: # LIV
+            self.identity_conv = conv1x1_block(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                stride=stride,
+                bias=bias,
+                use_bn=use_bn,
+                activation=None)
 
     def forward(self, x):
+        if self.resize_identity: # LIV
+            identity = self.identity_conv(x)
+        else:
+            identity = x
         x = self.conv1(x)
+        x = x + identity # Shorter skip connection - LIV
         x = self.conv2(x)
         return x
 
@@ -175,14 +191,98 @@ class ResUnit(nn.Module):
         self.activ = nn.ReLU(inplace=True)
 
     def forward(self, x):
-        if self.resize_identity:
-            identity = self.identity_conv(x)
-        else:
-            identity = x
+        # if self.resize_identity:
+        #     identity = self.identity_conv(x)
+        # else:
+        #     identity = x
         x = self.body(x)
-        x = x + identity
+        # Don't need skip connection bc shorter skip connection now in ResBlock() - LIV
+        # x = x + identity 
         x = self.activ(x)
         return x
+
+
+"""
+LIV
+"""
+class NonResUnit(nn.Module):
+    """
+    ResNet unit with residual connection.
+
+    Parameters:
+    ----------
+    in_channels : int
+        Number of input channels.
+    out_channels : int
+        Number of output channels.
+    stride : int or tuple/list of 2 int
+        Strides of the convolution.
+    padding : int or tuple/list of 2 int, default 1
+        Padding value for the second convolution layer in bottleneck.
+    dilation : int or tuple/list of 2 int, default 1
+        Dilation value for the second convolution layer in bottleneck.
+    bias : bool, default False
+        Whether the layer uses a bias vector.
+    use_bn : bool, default True
+        Whether to use BatchNorm layer.
+    bottleneck : bool, default True
+        Whether to use a bottleneck or simple block in units.
+    conv1_stride : bool, default False
+        Whether to use stride in the first or the second convolution layer of the block.
+    """
+    def __init__(self,
+                 in_channels,
+                 out_channels,
+                 stride,
+                 padding=1,
+                 dilation=1,
+                 bias=False,
+                 use_bn=True,
+                 bottleneck=True,
+                 conv1_stride=False):
+        super(NonResUnit, self).__init__()
+        self.resize_identity = (in_channels != out_channels) or (stride != 1)
+
+        if bottleneck:
+            self.body = ResBottleneck(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                stride=stride,
+                padding=padding,
+                dilation=dilation,
+                conv1_stride=conv1_stride)
+        else:
+            self.body = ResBlock(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                stride=stride,
+                bias=bias,
+                use_bn=use_bn)
+        if self.resize_identity:
+            self.identity_conv = conv1x1_block(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                stride=stride,
+                bias=bias,
+                use_bn=use_bn,
+                activation=None)
+        self.activ = nn.ReLU(inplace=True)
+
+    def forward(self, x):
+        # if self.resize_identity:
+        #     identity = self.identity_conv(x)
+        # else:
+        #     identity = x
+        x = self.body(x)
+        # No skip connection
+        # x = x + identity
+        x = self.activ(x)
+        return x
+
+
+"""
+LIV END
+"""
 
 
 class ResInitBlock(nn.Module):

@@ -16,7 +16,7 @@ import os
 import torch.nn as nn
 import torch.nn.init as init
 from .common import conv3x3_block
-from .resnet import ResUnit
+from .resnet import ResUnit, NonResUnit
 
 
 class CIFARResNet(nn.Module):
@@ -150,6 +150,188 @@ def get_resnet_cifar(num_classes,
             local_model_store_dir_path=root)
 
     return net
+
+
+
+"""
+LIV
+"""
+
+class CIFARNonResNet(nn.Module):
+    """
+    ResNet model for CIFAR from 'Deep Residual Learning for Image Recognition,' https://arxiv.org/abs/1512.03385.
+
+    Parameters:
+    ----------
+    channels : list of list of int
+        Number of output channels for each unit.
+    init_block_channels : int
+        Number of output channels for the initial unit.
+    bottleneck : bool
+        Whether to use a bottleneck or simple block in units.
+    in_channels : int, default 3
+        Number of input channels.
+    in_size : tuple of two ints, default (32, 32)
+        Spatial size of the expected input image.
+    num_classes : int, default 10
+        Number of classification classes.
+    num_non_res : int, default 0
+        Number of non-residual stacks. 
+    """
+    def __init__(self,
+                 channels,
+                 init_block_channels,
+                 bottleneck,
+                 in_channels=3,
+                 in_size=(32, 32),
+                 num_classes=10,
+                 num_non_res=0):
+        super(CIFARNonResNet, self).__init__()
+        self.in_size = in_size
+        self.num_classes = num_classes
+
+        self.features = nn.Sequential()
+        self.features.add_module("init_block", conv3x3_block(
+            in_channels=in_channels,
+            out_channels=init_block_channels))
+        in_channels = init_block_channels
+        for i, channels_per_stage in enumerate(channels):
+            stage = nn.Sequential()
+            for j, out_channels in enumerate(channels_per_stage):
+                stride = 2 if (j == 0) and (i != 0) else 1
+
+                if i < num_non_res and j < num_non_res:
+                    stage.add_module("unit{}".format(j + 1), NonResUnit(
+                        in_channels=in_channels,
+                        out_channels=out_channels,
+                        stride=stride,
+                        bottleneck=bottleneck,
+                        conv1_stride=False))
+                else: 
+                    stage.add_module("unit{}".format(j + 1), ResUnit(
+                        in_channels=in_channels,
+                        out_channels=out_channels,
+                        stride=stride,
+                        bottleneck=bottleneck,
+                        conv1_stride=False))
+                in_channels = out_channels
+            self.features.add_module("stage{}".format(i + 1), stage)
+        self.features.add_module("final_pool", nn.AvgPool2d(
+            kernel_size=8,
+            stride=1))
+
+        self.output = nn.Linear(
+            in_features=in_channels,
+            out_features=num_classes)
+
+        self._init_params()
+
+    def _init_params(self):
+        for name, module in self.named_modules():
+            if isinstance(module, nn.Conv2d):
+                init.kaiming_uniform_(module.weight)
+                if module.bias is not None:
+                    init.constant_(module.bias, 0)
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.size(0), -1)
+        x = self.output(x)
+        return x
+
+
+def get_nonresnet_cifar(num_classes,
+                     blocks,
+                     bottleneck,
+                     model_name=None,
+                     pretrained=False,
+                     root=os.path.join("~", ".torch", "models"),
+                     num_non_res=0,
+                     **kwargs):
+    """
+    Create ResNet model for CIFAR with specific parameters.
+
+    Parameters:
+    ----------
+    num_classes : int
+        Number of classification classes.
+    blocks : int
+        Number of blocks.
+    bottleneck : bool
+        Whether to use a bottleneck or simple block in units.
+    model_name : str or None, default None
+        Model name for loading pretrained model.
+    pretrained : bool, default False
+        Whether to load the pretrained weights for model.
+    root : str, default '~/.torch/models'
+        Location for keeping the model parameters.
+    num_non_res : int, default 0
+        Number of non-residual stacks
+    """
+
+    assert (num_classes in [10, 100])
+
+    if bottleneck:
+        assert ((blocks - 2) % 9 == 0)
+        layers = [(blocks - 2) // 9] * 3
+    else:
+        assert ((blocks - 2) % 6 == 0)
+        layers = [(blocks - 2) // 6] * 3
+
+    channels_per_layers = [16, 32, 64]
+    init_block_channels = 16
+
+    channels = [[ci] * li for (ci, li) in zip(channels_per_layers, layers)]
+
+    if bottleneck:
+        channels = [[cij * 4 for cij in ci] for ci in channels]
+
+    net = CIFARNonResNet(
+        channels=channels,
+        init_block_channels=init_block_channels,
+        bottleneck=bottleneck,
+        num_classes=num_classes,
+        num_non_res=num_non_res,
+        **kwargs)
+
+    if pretrained:
+        if (model_name is None) or (not model_name):
+            raise ValueError("Parameter `model_name` should be properly initialized for loading pretrained model.")
+        from .model_store import download_model
+        download_model(
+            net=net,
+            model_name=model_name,
+            local_model_store_dir_path=root)
+
+    return net
+
+
+
+def non_resnet20_cifar10(num_classes=10, num_non_res=0, **kwargs):
+    """
+    ResNet-20 model for CIFAR-10 from 'Deep Residual Learning for Image Recognition,' https://arxiv.org/abs/1512.03385.
+
+    Parameters:
+    ----------
+    num_classes : int, default 10
+        Number of classification classes.
+    num_non_res : int, default 0
+        Number of non-residual stacks
+    pretrained : bool, default False
+        Whether to load the pretrained weights for model.
+    root : str, default '~/.torch/models'
+        Location for keeping the model parameters.
+    """
+    return get_nonresnet_cifar(num_classes=num_classes, blocks=20, bottleneck=False, model_name="resnet20_cifar10", num_non_res=num_non_res,
+                            **kwargs)
+
+
+
+"""
+LIV END
+"""
+
+
 
 
 def resnet20_cifar10(num_classes=10, **kwargs):
