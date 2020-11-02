@@ -701,7 +701,7 @@ def main():
 
 
     # Args needed to evaluate model accuracy
-    test_model_args = argparse.Namespace(all=False, batch_size=512, calc_flops=False, calc_flops_only=False, data_dir='../resnet20/cifar10', data_subset='val', dataset='CIFAR10', disable_cudnn_autotune=False, in_channels=3, log_packages='torch, torchvision', log_pip_packages='', logging_file_name='train.log', model='resnet20_cifar10', num_classes=10, num_gpus=1, num_workers=4, remove_module=False, resume='', save_dir='', show_progress=False, use_pretrained=True, work_dir='../resnet20')
+    test_model_args = argparse.Namespace(all=False, batch_size=512, calc_flops=False, calc_flops_only=False, data_dir='/exdrive/resnet20-cifar10', data_subset='val', dataset='CIFAR10', disable_cudnn_autotune=False, in_channels=3, log_packages='torch, torchvision', log_pip_packages='', logging_file_name='train.log', model='resnet20_cifar10', num_classes=10, num_gpus=1, num_workers=4, remove_module=False, resume='', save_dir='', show_progress=False, use_pretrained=True, work_dir='../resnet20')
 
     
     # Build ResNet20 with shorter skip connection
@@ -733,8 +733,6 @@ def main():
         val_metric=get_composite_metric(ds_metainfo.val_metric_names, ds_metainfo.val_metric_extra_kwargs),
         train_metric=get_composite_metric(ds_metainfo.train_metric_names, ds_metainfo.train_metric_extra_kwargs),
         use_cuda=use_cuda)
-
-    eval_model(test_model_args, num_non_res, net)
     
     model_path = '/exdrive/resnet20-cifar10/saved-models/resnet20_cifar10_shorter_skip.pt'
     torch.save(model.state_dict(), model_path)
