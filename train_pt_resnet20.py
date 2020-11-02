@@ -712,6 +712,10 @@ def main():
     print(net)
     # summary(net, (3, 32, 32))
 
+    if torch.cuda.is_available():
+        print('cuda available - sending net to gpu')
+        net.cuda()
+
     print('\n\nTraining shorter skip resnet =', num_non_res)
     train_net(
         batch_size=batch_size,
