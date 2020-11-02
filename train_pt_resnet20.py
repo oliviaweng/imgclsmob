@@ -632,8 +632,8 @@ def main():
 
     args.num_gpus = 1
     args.num_epochs = 500
-    args.dataset = "CIFAR10"
-    args.model = "resnet20_cifar10"
+    # args.dataset = "CIFAR10"
+    # args.model = "resnet20_cifar10"
     args.work_dir = "/exdrive/resnet20-cifar10"
     args.save_diar = "/exdrive/resnet20-cifar10/saved-models"
     
