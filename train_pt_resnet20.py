@@ -735,7 +735,7 @@ def main():
         use_cuda=use_cuda)
     
     model_path = '/exdrive/resnet20-cifar10/saved-models/resnet20_cifar10_shorter_skip.pt'
-    torch.save(model.state_dict(), model_path)
+    torch.save(net.state_dict(), model_path)
 
     # FOR LATER - actually removing skip connections
     # Load teacher weights 
