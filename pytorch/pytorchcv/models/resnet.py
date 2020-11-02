@@ -52,23 +52,11 @@ class ResBlock(nn.Module):
             bias=bias,
             use_bn=use_bn,
             activation=None)
-        
-        if self.resize_identity: # LIV
-            self.identity_conv = conv1x1_block(
-                in_channels=in_channels,
-                out_channels=out_channels,
-                stride=stride,
-                bias=bias,
-                use_bn=use_bn,
-                activation=None)
 
-    def forward(self, x):
-        if self.resize_identity: # LIV
-            identity = self.identity_conv(x)
-        else:
-            identity = x
+    def forward(self, x, identity=None):
         x = self.conv1(x)
-        x = x + identity # Shorter skip connection - LIV
+        if identity is not None:
+            x = x + identity # Shorter skip connection - LIV
         x = self.conv2(x)
         return x
 
@@ -191,11 +179,11 @@ class ResUnit(nn.Module):
         self.activ = nn.ReLU(inplace=True)
 
     def forward(self, x):
-        # if self.resize_identity:
-        #     identity = self.identity_conv(x)
-        # else:
-        #     identity = x
-        x = self.body(x)
+        if self.resize_identity:
+            identity = self.identity_conv(x)
+        else:
+            identity = x
+        x = self.body(x, identity)
         # Don't need skip connection bc shorter skip connection now in ResBlock() - LIV
         # x = x + identity 
         x = self.activ(x)
