@@ -630,6 +630,14 @@ def main():
     args = parse_args()
     args.seed = init_rand(seed=args.seed)
 
+    args.num_gpus = 1
+    args.num_epochs = 500
+    args.dataset = "CIFAR10"
+    args.model = "resnet20_cifar10"
+    args.work_dir = "/exdrive/resnet20-cifar10"
+    args.save_diar = "/exdrive/resnet20-cifar10/saved-models"
+    
+
     _, log_file_exist = initialize_logging(
         logging_dir_path=args.save_dir,
         logging_file_name=args.logging_file_name,
@@ -701,13 +709,13 @@ def main():
 
 
     # Args needed to evaluate model accuracy
-    test_model_args = argparse.Namespace(all=False, batch_size=512, calc_flops=False, calc_flops_only=False, data_dir='/exdrive/resnet20-cifar10', data_subset='val', dataset='CIFAR10', disable_cudnn_autotune=False, in_channels=3, log_packages='torch, torchvision', log_pip_packages='', logging_file_name='train.log', model='resnet20_cifar10', num_classes=10, num_gpus=1, num_workers=4, remove_module=False, resume='', save_dir='', show_progress=False, use_pretrained=True, work_dir='../resnet20')
+    # test_model_args = argparse.Namespace(all=False, batch_size=512, calc_flops=False, calc_flops_only=False, data_dir='/exdrive/resnet20-cifar10', data_subset='val', dataset='CIFAR10', disable_cudnn_autotune=False, in_channels=3, log_packages='torch, torchvision', log_pip_packages='', logging_file_name='train.log', model='resnet20_cifar10', num_classes=10, num_gpus=1, num_workers=4, remove_module=False, resume='', save_dir='', show_progress=False, use_pretrained=True, work_dir='../resnet20')
 
     
     # Build ResNet20 with shorter skip connection
-    num_non_res = 0
-    print('Build shorter skip resnet = ', num_non_res)
-    net = non_resnet20_cifar10(num_non_res=num_non_res)
+    # num_non_res = 0
+    # print('Build shorter skip resnet = ', num_non_res)
+    # net = non_resnet20_cifar10(num_non_res=num_non_res)
 
     print(net)
     # summary(net, (3, 32, 32))

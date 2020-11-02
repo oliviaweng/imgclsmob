@@ -38,8 +38,6 @@ class ResBlock(nn.Module):
                  bias=False,
                  use_bn=True):
         super(ResBlock, self).__init__()
-        self.resize_identity = (in_channels != out_channels) or (stride != 1)
-
         self.conv1 = conv3x3_block(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -56,6 +54,7 @@ class ResBlock(nn.Module):
     def forward(self, x, identity=None):
         x = self.conv1(x)
         if identity is not None:
+            print('add shorter skip connection')
             x = x + identity # Shorter skip connection - LIV
         x = self.conv2(x)
         return x
