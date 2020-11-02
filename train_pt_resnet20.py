@@ -13,7 +13,7 @@ import torch.nn as nn
 import torch.backends.cudnn as cudnn
 import torch.utils.data
 
-from torchsummary import summary
+# from torchsummary import summary
 
 from common.logger_utils import initialize_logging
 from common.train_log_param_saver import TrainLogParamSaver
@@ -710,7 +710,7 @@ def main():
     net = non_resnet20_cifar10(num_non_res=num_non_res)
 
     print(net)
-    summary(net, (3, 32, 32))
+    # summary(net, (3, 32, 32))
 
     print('\n\nTraining shorter skip resnet =', num_non_res)
     train_net(
