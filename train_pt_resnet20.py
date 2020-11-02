@@ -649,6 +649,7 @@ def main():
         num_gpus=args.num_gpus,
         batch_size=args.batch_size)
 
+    # Get model
     net = prepare_model(
         model_name=args.model,
         use_pretrained=args.use_pretrained,

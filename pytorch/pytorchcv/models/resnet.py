@@ -54,10 +54,8 @@ class ResBlock(nn.Module):
     def forward(self, x, identity=None):
         x = self.conv1(x)
         if identity is not None:
-            print('add shorter skip connection')
+            # print('adding shorter skip connection)
             x = x + identity # Shorter skip connection - LIV
-        else:
-            print('no skip connection to add')
         x = self.conv2(x)
         return x
 
