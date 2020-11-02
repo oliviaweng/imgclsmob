@@ -177,7 +177,9 @@ def validate(metric,
             if use_cuda:
                 print('sending data to gpu')
                 target = target.cuda(non_blocking=True)
+                data = data.cuda()
             output = net(data)
+            print('validating')
             metric.update(target, output)
     return metric
 
