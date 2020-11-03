@@ -192,6 +192,54 @@ class ResUnit(nn.Module):
 """
 LIV
 """
+class NonResBlock(nn.Module):
+    """
+    Simple ResNet block for residual path in ResNet unit.
+
+    Parameters:
+    ----------
+    in_channels : int
+        Number of input channels.
+    out_channels : int
+        Number of output channels.
+    stride : int or tuple/list of 2 int
+        Strides of the convolution.
+    bias : bool, default False
+        Whether the layer uses a bias vector.
+    use_bn : bool, default True
+        Whether to use BatchNorm layer.
+    """
+    def __init__(self,
+                 in_channels,
+                 out_channels,
+                 stride,
+                 bias=False,
+                 use_bn=True):
+        super(NonResBlock, self).__init__()
+        self.conv1 = conv3x3_block(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            stride=stride,
+            bias=bias,
+            use_bn=use_bn)
+        self.conv2 = conv3x3_block(
+            in_channels=out_channels,
+            out_channels=out_channels,
+            bias=bias,
+            use_bn=use_bn,
+            activation=None)
+
+    def forward(self, x):
+        print('using nonresblock with NO skip connections')
+        x = self.conv1(x)
+        # NO skip connections at all
+        # if identity is not None:
+        #     # print('adding shorter skip connection)
+        #     x = x + identity # Shorter skip connection - LIV
+        x = self.conv2(x)
+        return x
+
+
 class NonResUnit(nn.Module):
     """
     ResNet unit with residual connection.
@@ -239,7 +287,7 @@ class NonResUnit(nn.Module):
                 dilation=dilation,
                 conv1_stride=conv1_stride)
         else:
-            self.body = ResBlock(
+            self.body = NonResBlock(
                 in_channels=in_channels,
                 out_channels=out_channels,
                 stride=stride,

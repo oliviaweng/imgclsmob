@@ -630,13 +630,15 @@ def main():
     args = parse_args()
     args.seed = init_rand(seed=args.seed)
 
-    args.num_gpus = 1
-    args.num_epochs = 500
+    # args.num_gpus = 1
+    # args.num_epochs = 500
     # args.dataset = "CIFAR10"
-    # args.model = "resnet20_cifar10"
-    args.work_dir = "/exdrive/resnet20-cifar10"
-    args.save_diar = "/exdrive/resnet20-cifar10/saved-models"
+    # args.model = "resnet20_cifar10" 
+
+    args.use_pretrained = True
     
+    num_non_res = 1
+    pretrained_model_file_path = '/exdrive/resnet20-cifar10/non-res-1-models/resnet20_cifar10_shorter-skip.pth'
 
     _, log_file_exist = initialize_logging(
         logging_dir_path=args.save_dir,
@@ -653,8 +655,10 @@ def main():
     net = prepare_model(
         model_name=args.model,
         use_pretrained=args.use_pretrained,
-        pretrained_model_file_path=args.resume.strip(),
-        use_cuda=use_cuda)
+        pretrained_model_file_path=pretrained_model_file_path,
+        # pretrained_model_file_path=args.resume.strip(),
+        use_cuda=use_cuda,
+        num_non_res=num_non_res)
     real_net = net.module if hasattr(net, "module") else net
     assert (hasattr(real_net, "num_classes"))
     num_classes = real_net.num_classes
@@ -721,7 +725,7 @@ def main():
         print('training using cuda = ', use_cuda)
         net.cuda()
 
-    print('\n\nTraining shorter skip resnet')
+    print('\n\nTraining nonresnet20 on cifar10 with num_non_res=', num_non_res)
     train_net(
         batch_size=batch_size,
         num_epochs=args.num_epochs,
@@ -745,9 +749,7 @@ def main():
     # Load teacher weights 
     # net.load_state_dict(torch.load(model_path))
 
-    # Freeze all layers except skip connection layers in first stack
-    # for i, param in enumerate(net.parameters()):
-        # param.requires_grad = False
+
 
     
 

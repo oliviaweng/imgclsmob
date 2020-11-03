@@ -322,6 +322,7 @@ def non_resnet20_cifar10(num_classes=10, num_non_res=0, **kwargs):
     root : str, default '~/.torch/models'
         Location for keeping the model parameters.
     """
+    print('getting NONresnet20 for cifar10 with num_non_res = ', num_non_res)
     return get_nonresnet_cifar(num_classes=num_classes, blocks=20, bottleneck=False, model_name="resnet20_cifar10", num_non_res=num_non_res,
                             **kwargs)
 

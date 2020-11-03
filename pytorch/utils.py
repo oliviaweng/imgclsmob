@@ -43,6 +43,7 @@ def prepare_model(model_name,
                   use_pretrained,
                   pretrained_model_file_path,
                   use_cuda,
+                  num_non_res=0,
                   use_data_parallel=True,
                   net_extra_kwargs=None,
                   load_ignore_extra=False,
@@ -92,10 +93,6 @@ def prepare_model(model_name,
         kwargs.update(net_extra_kwargs)
 
     net = get_model(model_name, **kwargs)
-    # Build ResNet20 with shorter skip connection
-    # num_non_res = 0
-    # print('Build shorter skip resnet = ', num_non_res)
-    # net = non_resnet20_cifar10(num_non_res=num_non_res)
 
     if pretrained_model_file_path:
         assert (os.path.isfile(pretrained_model_file_path))
@@ -118,6 +115,13 @@ def prepare_model(model_name,
                 net.load_state_dict(net_tmp.module.cpu().state_dict())
             else:
                 net.load_state_dict(checkpoint)
+
+    # Freeze all layers 
+    for i, param in enumerate(net.parameters()):
+        param.requires_grad = False
+
+    # Unfreeze non residual stack 1
+    
 
     if use_data_parallel and use_cuda:
         net = torch.nn.DataParallel(net)
