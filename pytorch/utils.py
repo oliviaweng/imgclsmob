@@ -41,7 +41,6 @@ def prepare_model(model_name,
                   use_pretrained,
                   pretrained_model_file_path,
                   use_cuda,
-                  num_non_res=0,
                   use_data_parallel=True,
                   net_extra_kwargs=None,
                   load_ignore_extra=False,
@@ -90,9 +89,7 @@ def prepare_model(model_name,
     if net_extra_kwargs is not None:
         kwargs.update(net_extra_kwargs)
 
-    print('prepare_model() num_non_res =', num_non_res)
-
-    net = get_model(model_name, num_non_res, **kwargs)
+    net = get_model(model_name, **kwargs)
 
     if pretrained_model_file_path:
         assert (os.path.isfile(pretrained_model_file_path))

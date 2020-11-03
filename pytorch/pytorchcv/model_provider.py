@@ -1071,7 +1071,7 @@ _models = {
 }
 
 
-def get_model(name, **kwargs):
+def get_model(name, num_non_res=0, **kwargs):
     """
     Get supported model.
 
