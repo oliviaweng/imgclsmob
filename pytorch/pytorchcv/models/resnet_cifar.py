@@ -298,17 +298,17 @@ def get_nonresnet_cifar(num_classes,
     if pretrained:
         if (model_name is None) or (not model_name):
             raise ValueError("Parameter `model_name` should be properly initialized for loading pretrained model.")
-        from .model_store import download_model
-        download_model(
-            net=net,
-            model_name=model_name,
-            local_model_store_dir_path=root)
+    #     from .model_store import download_model
+    #     download_model(
+    #         net=net,
+    #         model_name=model_name,
+    #         local_model_store_dir_path=root)
 
     return net
 
 
 
-def non_resnet20_cifar10(num_classes=10, num_non_res=0, **kwargs):
+def nonresnet20_cifar10(num_classes=10, num_non_res=0, **kwargs):
     """
     ResNet-20 model for CIFAR-10 from 'Deep Residual Learning for Image Recognition,' https://arxiv.org/abs/1512.03385.
 
