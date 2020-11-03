@@ -121,6 +121,7 @@ def prepare_model(model_name,
         param.requires_grad = False
 
     # Unfreeze non residual stack 1
+    print('Printing named parameters...')
     print(net.named_parameters())
 
 
