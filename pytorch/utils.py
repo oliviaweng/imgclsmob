@@ -121,7 +121,8 @@ def prepare_model(model_name,
         param.requires_grad = False
 
     # Unfreeze non residual stack 1
-    
+    print(net.named_parameters())
+
 
     if use_data_parallel and use_cuda:
         net = torch.nn.DataParallel(net)

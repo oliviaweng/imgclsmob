@@ -632,7 +632,7 @@ _models = {
     'nin_cifar100': nin_cifar100,
     'nin_svhn': nin_svhn,
 
-    'nonresnet20_cifar10': non_resnet20_cifar10, # LIV
+    'nonresnet20_cifar10': nonresnet20_cifar10, # LIV
     'resnet20_cifar10': resnet20_cifar10,
     'resnet20_cifar100': resnet20_cifar100,
     'resnet20_svhn': resnet20_svhn,
