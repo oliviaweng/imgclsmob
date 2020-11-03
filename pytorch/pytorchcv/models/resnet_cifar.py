@@ -200,8 +200,8 @@ class CIFARNonResNet(nn.Module):
             stage = nn.Sequential()
             for j, out_channels in enumerate(channels_per_stage):
                 stride = 2 if (j == 0) and (i != 0) else 1
-
-                if i == 1 and j < num_non_res:
+                # Adjust these parameters to build non-res blocks - LIV
+                if i == 0 and j < num_non_res:
                     stage.add_module("unit{}".format(j + 1), NonResUnit(
                         in_channels=in_channels,
                         out_channels=out_channels,
