@@ -92,7 +92,7 @@ def prepare_model(model_name,
 
     print('prepare_model() num_non_res =', num_non_res)
 
-    net = get_model(model_name, **kwargs)
+    net = get_model(model_name, num_non_res, **kwargs)
 
     if pretrained_model_file_path:
         assert (os.path.isfile(pretrained_model_file_path))
