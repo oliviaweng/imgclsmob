@@ -652,13 +652,15 @@ def main():
         batch_size=args.batch_size)
 
     # Get model
+    print('main num_non_res =', num_non_res)
     net = prepare_model(
         model_name=args.model,
         use_pretrained=args.use_pretrained,
         pretrained_model_file_path=pretrained_model_file_path,
         # pretrained_model_file_path=args.resume.strip(),
         use_cuda=use_cuda,
-        num_non_res=num_non_res)
+        num_non_res=num_non_res,
+        remove_module=True)
     real_net = net.module if hasattr(net, "module") else net
     assert (hasattr(real_net, "num_classes"))
     num_classes = real_net.num_classes

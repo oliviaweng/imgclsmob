@@ -90,6 +90,8 @@ def prepare_model(model_name,
     if net_extra_kwargs is not None:
         kwargs.update(net_extra_kwargs)
 
+    print('prepare_model() num_non_res =', num_non_res)
+
     net = get_model(model_name, **kwargs)
 
     if pretrained_model_file_path:
