@@ -13,8 +13,6 @@ from .metrics.seg_metrics import PixelAccuracyMetric, MeanIoUMetric
 from .metrics.det_metrics import CocoDetMApMetric
 from .metrics.hpe_metrics import CocoHpeOksApMetric
 
-from pytorch.pytorchcv.models.resnet_cifar import non_resnet20_cifar10
-
 def prepare_pt_context(num_gpus,
                        batch_size):
     """
