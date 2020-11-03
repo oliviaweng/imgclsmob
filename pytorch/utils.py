@@ -114,12 +114,11 @@ def prepare_model(model_name,
                 net.load_state_dict(checkpoint)
 
     # Freeze all layers 
-    for i, param in enumerate(net.parameters()):
-        param.requires_grad = False
+    # for i, param in enumerate(net.parameters()):
+    #     param.requires_grad = False
 
     # Unfreeze non residual stack 1
-    print('Printing named parameters...')
-    print(net.named_parameters())
+
 
 
     if use_data_parallel and use_cuda:
