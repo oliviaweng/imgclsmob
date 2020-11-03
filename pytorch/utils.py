@@ -119,6 +119,7 @@ def prepare_model(model_name,
 
     # Unfreeze non residual stack 1
 
+    print(dir(net))
 
 
     if use_data_parallel and use_cuda:
