@@ -637,8 +637,8 @@ def main():
 
     args.use_pretrained = True
     
-    num_non_res = 1
-    pretrained_model_file_path = '/exdrive/resnet20-cifar10/non-res-1-models/resnet20_cifar10_shorter-skip.pth'
+    num_non_res = 2
+    pretrained_model_file_path = '/exdrive/resnet20-cifar10/non-res-2-models/nonresnet20_cifar10_1.pth'
 
     _, log_file_exist = initialize_logging(
         logging_dir_path=args.save_dir,
@@ -738,15 +738,6 @@ def main():
         train_metric=get_composite_metric(ds_metainfo.train_metric_names, ds_metainfo.train_metric_extra_kwargs),
         use_cuda=use_cuda)
     
-    model_path = '/exdrive/resnet20-cifar10/saved-models/resnet20_cifar10_shorter_skip.pt'
-    torch.save(net.state_dict(), model_path)
-
-    # FOR LATER - actually removing skip connections
-    # Load teacher weights 
-    # net.load_state_dict(torch.load(model_path))
-
-
-
     
 
 
