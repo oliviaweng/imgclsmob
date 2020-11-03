@@ -230,7 +230,6 @@ class NonResBlock(nn.Module):
             activation=None)
 
     def forward(self, x):
-        print('using nonresblock with NO skip connections')
         x = self.conv1(x)
         # NO skip connections at all
         # if identity is not None:
