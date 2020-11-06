@@ -119,12 +119,13 @@ def prepare_model(model_name,
     # for i, param in enumerate(net.parameters()):
     #     param.requires_grad = False
     
-    layers = list(net.children())[0]
-    layers_list = list(layers)
-    print('layer[0]\n', layers_list[0])
-    print('layer[1]\n', layers_list[1])
-    print('layer[2]\n', layers_list[2])
-    print('layer[3]\n', layers_list[3])
+    stacks = list(net.children())[0]
+    model = list(stacks)[1]
+    layers = list(model)
+    print('layers[0]\n', layers[0])
+    print('layers[1]\n', layers[1])
+    print('layers[2]\n', layers[2])
+    print('layers[3]\n', layers[3])
 
     # Freeze all layers 
     # for i, param in enumerate(net.parameters()):
