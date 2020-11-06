@@ -119,9 +119,11 @@ def prepare_model(model_name,
 
     # Unfreeze non residual stack 1
 
-    print('printing network dir')
-    print(dir(net))
-    print('done printing network dir')
+    # print('num of parameter layers ='. len(net.parameters()))
+
+    # print('printing network dir')
+    # print(dir(net))
+    # print('done printing network dir')
 
 
     if use_data_parallel and use_cuda:

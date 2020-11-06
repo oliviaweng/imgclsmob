@@ -349,6 +349,8 @@ def prepare_trainer(net,
     int
         Start epoch.
     """
+
+    # Freeze layers here - LIV
     optimizer_name = optimizer_name.lower()
     if (optimizer_name == "sgd") or (optimizer_name == "nag"):
         optimizer = torch.optim.SGD(
@@ -637,8 +639,8 @@ def main():
 
     args.use_pretrained = True
     
-    num_non_res = 2
-    pretrained_model_file_path = '/exdrive/resnet20-cifar10/non-res-2-models/nonresnet20_cifar10_1.pth'
+    num_non_res = 1
+    pretrained_model_file_path = '/exdrive/resnet20-cifar10/frozen-training/non-res-stack-1-models/resnet20-cifar10-shorter-skip.pth'
 
     _, log_file_exist = initialize_logging(
         logging_dir_path=args.save_dir,
@@ -658,7 +660,7 @@ def main():
         pretrained_model_file_path=pretrained_model_file_path,
         # pretrained_model_file_path=args.resume.strip(),
         use_cuda=use_cuda,
-        remove_module=True)
+        remove_module=True) # True if using our own trained model waits; o.w. False
     real_net = net.module if hasattr(net, "module") else net
     assert (hasattr(real_net, "num_classes"))
     num_classes = real_net.num_classes
