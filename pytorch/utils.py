@@ -128,9 +128,9 @@ def prepare_model(model_name,
     print('unit1.conv1.conv\n', unit1.body.conv1.conv)
     print('unit1.conv1.conv.weight\n', unit1.body.conv1.conv.weight)
     print('unit1.conv1.conv.weight.requires_grad =', unit1.body.conv1.conv.weight.requires_grad)
-    # print('unit1.conv1.weight\n', unit1.body.conv1.weight)
-    # print('unit1.conv1.weight.requires_grad =', unit1.body.conv1.weight.requires_grad)
-    print('unit1.conv1.params\n', unit1.body.conv1.parameters())
+    print('unit1.conv1.conv.bias\n', unit1.body.conv1.conv.bias)
+    print('unit1.conv1.conv.bias.requires_grad =', unit1.body.conv1.conv.bias.requires_grad)
+
 
 
 
