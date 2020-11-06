@@ -125,7 +125,7 @@ def prepare_model(model_name,
     for unit in units:
         unit.body.conv1.conv.weight.requires_grad = True
 
-    for param in enumerate(net.parameters()):
+    for param in net.parameters():
         if param.requires_grad:
             print('train this layer!')
 
