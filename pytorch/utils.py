@@ -116,25 +116,30 @@ def prepare_model(model_name,
     # Freeze layers here - LIV
 
     # Freeze all layers
-    ct = 0
-    for i, param in enumerate(net.parameters()):
-        ct += 1
-        # param.requires_grad = False
-    
-    print('num param layers =', ct)
 
+    for i, param in enumerate(net.parameters()):
+        # param.requires_grad = False
+
+    print('child and its params')
+    ct = 0
+    for child in net.children():
+        print(child)
+        param_ct = 0
+        for param in child.parameters():
+            print(param)
+            param_ct += 1
+        print('child {} has {} params'.format(ct, param_ct))
+        ct += 1
+
+    print('num children =', ct)
     stacks = list(net.children())[0]
     stack1 = list(stacks)[1]
     units = list(stack1)
     unit1 = list(units)[0]
+    layers = list(unit1)
 
-    print('unit1\n', unit1.body())
-    # print('units[2]\n', units[2])
-    # print('layers[3]\n', layers[3])
-
-    # Freeze all layers 
-    # for i, param in enumerate(net.parameters()):
-    #     param.requires_grad = False
+    print('layer[0]\n', layers[0])
+    print('layer[1]\n', layers[1])
 
 
     if use_data_parallel and use_cuda:
