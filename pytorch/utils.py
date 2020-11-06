@@ -123,7 +123,7 @@ def prepare_model(model_name,
     stack1 = list(stacks)[1] # Freeze conv1 layers in first nonres stack
     units = list(stack1)
     for unit in units:
-        unit.conv1.conv.weight.requires_grad = True
+        unit.body.conv1.conv.weight.requires_grad = True
 
     for param in enumerate(net.parameters()):
         if param.requires_grad:
