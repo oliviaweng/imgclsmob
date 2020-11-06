@@ -124,7 +124,7 @@ def prepare_model(model_name,
     units = list(stack1)
     unit1 = list(units)[0]
 
-    print('unit1.conv1\n', unit1.conv1)
+    print('unit1.conv1\n', unit1.body.conv1)
 
     print('net.conv1\n', net.features.stage1.unit1.conv1)
     # print('net.conv1.weight\n', net.conv1.weight)
