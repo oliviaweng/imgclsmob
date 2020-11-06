@@ -117,7 +117,7 @@ def prepare_model(model_name,
 
     # Freeze all layers
 
-    for i, param in enumerate(net.parameters()):
+    # for i, param in enumerate(net.parameters()):
         # param.requires_grad = False
 
     print('child and its params')
@@ -139,7 +139,12 @@ def prepare_model(model_name,
     layers = list(unit1)
 
     print('layer[0]\n', layers[0])
+
+    print('net.conv1\n', net.conv1)
+
     print('layer[1]\n', layers[1])
+
+
 
 
     if use_data_parallel and use_cuda:
