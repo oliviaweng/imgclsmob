@@ -116,13 +116,18 @@ def prepare_model(model_name,
     # Freeze layers here - LIV
 
     # Freeze all layers
-    # for i, param in enumerate(net.parameters()):
-        # param.requires_grad = False
+    for i, param in enumerate(net.parameters()):
+        param.requires_grad = False
 
     stacks = list(net.children())[0]
-    stack1 = list(stacks)[1]
+    stack1 = list(stacks)[1] # Freeze conv1 layers in first nonres stack
     units = list(stack1)
-    unit1 = list(units)[0]
+    for unit in units:
+        unit.conv1.conv.weight.requires_grad = True
+
+    for param in enumerate(net.parameters()):
+        if param.requires_grad:
+            print('train this layer!')
 
     print('unit1.conv1\n', unit1.body.conv1)
     print('unit1.conv1.conv\n', unit1.body.conv1.conv)

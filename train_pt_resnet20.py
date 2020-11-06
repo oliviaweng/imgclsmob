@@ -352,7 +352,8 @@ def prepare_trainer(net,
     optimizer_name = optimizer_name.lower()
     if (optimizer_name == "sgd") or (optimizer_name == "nag"):
         optimizer = torch.optim.SGD(
-            params=net.parameters(),
+            # params=net.parameters(),
+            params=filter(lambda p: p.requires_grad, net.parameters()),
             lr=lr,
             momentum=momentum,
             weight_decay=wd,
