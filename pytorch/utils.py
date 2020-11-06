@@ -113,19 +113,6 @@ def prepare_model(model_name,
             else:
                 net.load_state_dict(checkpoint)
 
-    # Freeze all layers 
-    # for i, param in enumerate(net.parameters()):
-    #     param.requires_grad = False
-
-    # Unfreeze non residual stack 1
-
-    # print('num of parameter layers ='. len(net.parameters()))
-
-    # print('printing network dir')
-    # print(dir(net))
-    # print('done printing network dir')
-
-
     if use_data_parallel and use_cuda:
         net = torch.nn.DataParallel(net)
 
