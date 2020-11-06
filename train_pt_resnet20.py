@@ -349,23 +349,6 @@ def prepare_trainer(net,
     int
         Start epoch.
     """
-
-    # Freeze layers here - LIV
-
-    # Freeze all layers
-    # for i, param in enumerate(net.parameters()):
-    #     param.requires_grad = False
-    
-    print('net[0]', net[0])
-    print('net[1]', net[1])
-    print('net[2]', net[2])
-    print('net[3]', net[3])
-    print('net[4]', net[4])
-    print('net[5]', net[5])
-
-    # Freeze all layers 
-    # for i, param in enumerate(net.parameters()):
-    #     param.requires_grad = False
     optimizer_name = optimizer_name.lower()
     if (optimizer_name == "sgd") or (optimizer_name == "nag"):
         optimizer = torch.optim.SGD(

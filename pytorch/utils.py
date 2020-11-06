@@ -112,6 +112,24 @@ def prepare_model(model_name,
                 net.load_state_dict(net_tmp.module.cpu().state_dict())
             else:
                 net.load_state_dict(checkpoint)
+    
+    # Freeze layers here - LIV
+
+    # Freeze all layers
+    # for i, param in enumerate(net.parameters()):
+    #     param.requires_grad = False
+    
+    print('net[0]', net[0])
+    print('net[1]', net[1])
+    print('net[2]', net[2])
+    print('net[3]', net[3])
+    print('net[4]', net[4])
+    print('net[5]', net[5])
+
+    # Freeze all layers 
+    # for i, param in enumerate(net.parameters()):
+    #     param.requires_grad = False
+
 
     if use_data_parallel and use_cuda:
         net = torch.nn.DataParallel(net)
