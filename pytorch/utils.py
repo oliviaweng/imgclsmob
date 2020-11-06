@@ -120,30 +120,20 @@ def prepare_model(model_name,
     # for i, param in enumerate(net.parameters()):
         # param.requires_grad = False
 
-    print('child and its params')
-    ct = 0
-    for child in net.children():
-        print(child)
-        param_ct = 0
-        for param in child.parameters():
-            print(param)
-            param_ct += 1
-        print('child {} has {} params'.format(ct, param_ct))
-        ct += 1
-
     print('num children =', ct)
     stacks = list(net.children())[0]
     stack1 = list(stacks)[1]
-    units = list(stack1)
-    unit1 = list(units)[0]
-    layers = list(unit1)
 
-    print('layer[0]\n', layers[0])
+    # print('stack1\n', stack1)
+    # print('stack1 params\n'. stack1.parameters())
+
+
+    # units = list(stack1)
+    # unit1 = list(units)[0]
 
     print('net.conv1\n', net.conv1)
-
-    print('layer[1]\n', layers[1])
-
+    print('net.conv1.weight\n', net.conv1.weight)
+    # print('unit1.conv1\n', unit1.conv1)
 
 
 
