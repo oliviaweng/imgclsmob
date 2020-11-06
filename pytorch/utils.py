@@ -127,10 +127,8 @@ def prepare_model(model_name,
     stack1 = list(stacks)[1]
     units = list(stack1)
     unit1 = list(units)[0]
-    
 
-    print('units[0]\n', unit1[0])
-    print('units[1]\n', unit1[1])
+    print('unit1\n', unit1.body())
     # print('units[2]\n', units[2])
     # print('layers[3]\n', layers[3])
 
