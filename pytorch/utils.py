@@ -116,19 +116,19 @@ def prepare_model(model_name,
     # Freeze layers here - LIV
 
     # Freeze all layers
-    for i, param in enumerate(net.parameters()):
-        param.requires_grad = False
+    # for i, param in enumerate(net.parameters()):
+    #     param.requires_grad = False
 
-    stacks = list(net.children())[0]
+    # stacks = list(net.children())[0]
     # unfreeze_stack = list(stacks)[1] # Unfreeze conv1 layers in FIRST nonres stack
-    unfreeze_stack = list(stacks)[2] # Unfreeze conv1 layers in SECOND nonres stack
+    # unfreeze_stack = list(stacks)[2] # Unfreeze conv1 layers in SECOND nonres stack
     # unfreeze_stack = list(stacks)[3] # Unfreeze conv1 layers in THIRD nonres stack
-    for unit in unfreeze_stack:
-        unit.body.conv1.conv.weight.requires_grad = True
+    # for unit in unfreeze_stack:
+    #     unit.body.conv1.conv.weight.requires_grad = True
 
-    for param in net.parameters():
-        if param.requires_grad:
-            print('train this layer!')
+    # for param in net.parameters():
+    #     if param.requires_grad:
+    #         print('train this layer!')
 
 
     if use_data_parallel and use_cuda:
