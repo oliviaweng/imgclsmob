@@ -636,8 +636,8 @@ def main():
 
     args.use_pretrained = True
     
-    num_non_res = 2
-    pretrained_model_file_path = '/exdrive/resnet20-cifar10/unfrozen-training/by-stack/non-res-stack-2-models/cifar10-non-res-stack-1-teacher.pth'
+    num_non_res = 3
+    pretrained_model_file_path = '/exdrive/resnet20-cifar10/unfrozen-training/by-stack/non-res-stack-3-models/cifar10-non-res-stack-2-teacher.pth'
 
     _, log_file_exist = initialize_logging(
         logging_dir_path=args.save_dir,
