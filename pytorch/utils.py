@@ -120,23 +120,15 @@ def prepare_model(model_name,
         param.requires_grad = False
 
     stacks = list(net.children())[0]
-    stack1 = list(stacks)[1] # Freeze conv1 layers in first nonres stack
-    units = list(stack1)
-    for unit in units:
+    # unfreeze_stack = list(stacks)[1] # Unfreeze conv1 layers in FIRST nonres stack
+    unfreeze_stack = list(stacks)[2] # Unfreeze conv1 layers in SECOND nonres stack
+    # unfreeze_stack = list(stacks)[3] # Unfreeze conv1 layers in THIRD nonres stack
+    for unit in unfreeze_stack:
         unit.body.conv1.conv.weight.requires_grad = True
 
     for param in net.parameters():
         if param.requires_grad:
             print('train this layer!')
-
-    # print('unit1.conv1\n', unit1.body.conv1)
-    # print('unit1.conv1.conv\n', unit1.body.conv1.conv)
-    # print('unit1.conv1.conv.weight\n', unit1.body.conv1.conv.weight)
-    # print('unit1.conv1.conv.weight.requires_grad =', unit1.body.conv1.conv.weight.requires_grad)
-    # print('unit1.conv1.conv.bias\n', unit1.body.conv1.conv.bias)
-    # print('unit1.conv1.conv.bias.requires_grad =', unit1.body.conv1.conv.bias.requires_grad)
-
-
 
 
     if use_data_parallel and use_cuda:
