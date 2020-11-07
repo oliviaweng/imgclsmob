@@ -353,7 +353,9 @@ def test_model(args):
         Main accuracy value.
     """
 
-    print('test_model args = ', args)
+    args.remove_module = True 
+    pretrained_model_file_path = '/Users/olivia/ucsd-research/resnet33-compression/resnet20/trained-models/cifar10-nonresnet20-final.pth'
+
 
     ds_metainfo = prepare_dataset_metainfo(args=args)
     use_cuda, batch_size = prepare_pt_context(
@@ -370,7 +372,8 @@ def test_model(args):
     net = prepare_model(
         model_name=args.model,
         use_pretrained=args.use_pretrained,
-        pretrained_model_file_path=args.resume.strip(),
+        pretrained_model_file_path=pretrained_model_file_path,
+        # pretrained_model_file_path=args.resume.strip(),
         use_cuda=use_cuda,
         num_classes=(args.num_classes if ds_metainfo.ml_type != "hpe" else None),
         in_channels=args.in_channels,
@@ -396,65 +399,6 @@ def test_model(args):
         calc_flops_only=args.calc_flops_only,
         extended_log=True)
     return acc_values[ds_metainfo.saver_acc_ind] if len(acc_values) > 0 else None
-
-
-"""
-LIV
-"""
-def test_non_model(args, model):
-    """
-    Main test routine.
-
-    Parameters:
-    ----------
-    args : ArgumentParser
-        Main script arguments.
-
-    Returns
-    -------
-    float
-        Main accuracy value.
-    """
-
-    ds_metainfo = prepare_dataset_metainfo(args=args)
-    use_cuda, batch_size = prepare_pt_context(
-        num_gpus=args.num_gpus,
-        batch_size=args.batch_size)
-    data_source = prepare_data_source(
-        ds_metainfo=ds_metainfo,
-        data_subset=args.data_subset,
-        batch_size=batch_size,
-        num_workers=args.num_workers)
-    metric = prepare_metric(
-        ds_metainfo=ds_metainfo,
-        data_subset=args.data_subset)
-
-
-    net = model
-    
-    
-    input_image_size = update_input_image_size(
-        net=net,
-        input_size=(args.input_size if hasattr(args, "input_size") else None))
-    if args.show_progress:
-        from tqdm import tqdm
-        data_source = tqdm(data_source)
-    assert (args.use_pretrained or args.resume.strip() or args.calc_flops_only)
-    acc_values = calc_model_accuracy(
-        net=net,
-        test_data=data_source,
-        metric=metric,
-        use_cuda=use_cuda,
-        input_image_size=input_image_size,
-        in_channels=args.in_channels,
-        calc_weight_count=True,
-        calc_flops=args.calc_flops,
-        calc_flops_only=args.calc_flops_only,
-        extended_log=True)
-    return acc_values[ds_metainfo.saver_acc_ind] if len(acc_values) > 0 else None
-
-
-
 
 
 

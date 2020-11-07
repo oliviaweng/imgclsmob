@@ -23,8 +23,6 @@ from pytorch.utils import report_accuracy, get_composite_metric, get_metric_name
 from pytorch.dataset_utils import get_dataset_metainfo
 from pytorch.dataset_utils import get_train_data_source, get_val_data_source
 
-from eval_pt import test_non_model
-
 
 
 def add_train_cls_parser_arguments(parser):
