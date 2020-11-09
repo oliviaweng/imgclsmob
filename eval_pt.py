@@ -353,8 +353,8 @@ def test_model(args):
         Main accuracy value.
     """
 
-    # args.remove_module = True 
-    # pretrained_model_file_path = '/Users/olivia/ucsd-research/resnet33-compression/resnet20/trained-models/trained-frozen/cifar10-nonresnet20-final .pth'
+    args.remove_module = True 
+    pretrained_model_file_path = '/Users/olivia/ucsd-research/resnet33-compression/resnet20/trained-models/original-resnet20-cifar10-0.1170.pth'
 
 
     ds_metainfo = prepare_dataset_metainfo(args=args)
@@ -372,8 +372,8 @@ def test_model(args):
     net = prepare_model(
         model_name=args.model,
         use_pretrained=args.use_pretrained,
-        # pretrained_model_file_path=pretrained_model_file_path,
-        pretrained_model_file_path=args.resume.strip(),
+        pretrained_model_file_path=pretrained_model_file_path,
+        # pretrained_model_file_path=args.resume.strip(),
         use_cuda=use_cuda,
         num_classes=(args.num_classes if ds_metainfo.ml_type != "hpe" else None),
         in_channels=args.in_channels,

@@ -571,7 +571,7 @@ def train_net(batch_size,
 
     gtic = time.time()
     for epoch in range(start_epoch1 - 1, num_epochs):
-        lr_scheduler.step()
+        # lr_scheduler.step()
 
         train_loss = train_epoch(
             epoch=epoch,
@@ -590,6 +590,12 @@ def train_net(batch_size,
             net=net,
             val_data=val_data,
             use_cuda=use_cuda)
+
+        # PyTorch >= 1.1.0 expects learning rate scheduler to be applied after
+        # optimizer's update
+        # https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+        lr_scheduler.step() 
+        
         val_accuracy_msg = report_accuracy(metric=val_metric)
         logging.info("[Epoch {}] validation: {}".format(epoch + 1, val_accuracy_msg))
 
