@@ -634,7 +634,7 @@ def main():
     # args.dataset = "CIFAR10"
     # args.model = "resnet20_cifar10" 
 
-    args.use_pretrained = True
+    args.use_pretrained = False
     
     num_non_res = 3
     pretrained_model_file_path = '/exdrive/resnet20-cifar10/unfrozen-training/by-stack/non-res-stack-3-models/cifar10-non-res-stack-2-teacher.pth'
@@ -654,8 +654,8 @@ def main():
     net = prepare_model(
         model_name=args.model,
         use_pretrained=args.use_pretrained,
-        pretrained_model_file_path=pretrained_model_file_path,
-        # pretrained_model_file_path=args.resume.strip(),
+        # pretrained_model_file_path=pretrained_model_file_path,
+        pretrained_model_file_path=args.resume.strip(),
         use_cuda=use_cuda,
         remove_module=True) # True if using our own trained model waits; o.w. False
     real_net = net.module if hasattr(net, "module") else net

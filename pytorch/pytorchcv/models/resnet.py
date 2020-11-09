@@ -182,9 +182,10 @@ class ResUnit(nn.Module):
             identity = self.identity_conv(x)
         else:
             identity = x
-        x = self.body(x, identity)
+        x = self.body(x, None) # Needed for original skip connection AND need line below: x = x + identity
+        # x = self.body(x, identity) # creates shorter skip connection - LIV
         # Don't need skip connection bc shorter skip connection now in ResBlock() - LIV
-        # x = x + identity 
+        x = x + identity 
         x = self.activ(x)
         return x
 
