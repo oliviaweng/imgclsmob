@@ -226,6 +226,152 @@ class ResUnit(HybridBlock):
         return x
 
 
+"""
+LIV
+"""
+
+class NonResBlock(HybridBlock):
+    """
+    Simple ResNet block for residual path in ResNet unit.
+
+    Parameters:
+    ----------
+    in_channels : int
+        Number of input channels.
+    out_channels : int
+        Number of output channels.
+    strides : int or tuple/list of 2 int
+        Strides of the convolution.
+    use_bias : bool, default False
+        Whether the layer uses a bias vector.
+    use_bn : bool, default True
+        Whether to use BatchNorm layer.
+    bn_use_global_stats : bool, default False
+        Whether global moving statistics is used instead of local batch-norm for BatchNorm layers.
+    bn_cudnn_off : bool, default False
+        Whether to disable CUDNN batch normalization operator.
+    """
+    def __init__(self,
+                 in_channels,
+                 out_channels,
+                 strides,
+                 use_bias=False,
+                 use_bn=True,
+                 bn_use_global_stats=False,
+                 bn_cudnn_off=False,
+                 **kwargs):
+        super(NonResBlock, self).__init__(**kwargs)
+        with self.name_scope():
+            self.conv1 = conv3x3_block(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                strides=strides,
+                use_bias=use_bias,
+                use_bn=use_bn,
+                bn_use_global_stats=bn_use_global_stats,
+                bn_cudnn_off=bn_cudnn_off)
+            self.conv2 = conv3x3_block(
+                in_channels=out_channels,
+                out_channels=out_channels,
+                use_bias=use_bias,
+                use_bn=use_bn,
+                bn_use_global_stats=bn_use_global_stats,
+                bn_cudnn_off=bn_cudnn_off,
+                activation=None)
+
+    def hybrid_forward(self, F, x):
+        x = self.conv1(x)
+        x = self.conv2(x)
+        return x
+
+
+class NonResUnit(HybridBlock):
+    """
+    ResNet unit with residual connection.
+
+    Parameters:
+    ----------
+    in_channels : int
+        Number of input channels.
+    out_channels : int
+        Number of output channels.
+    strides : int or tuple/list of 2 int
+        Strides of the convolution.
+    padding : int or tuple/list of 2 int, default 1
+        Padding value for the second convolution layer in bottleneck.
+    dilation : int or tuple/list of 2 int, default 1
+        Dilation value for the second convolution layer in bottleneck.
+    use_bias : bool, default False
+        Whether the layer uses a bias vector.
+    use_bn : bool, default True
+        Whether to use BatchNorm layer.
+    bn_use_global_stats : bool, default False
+        Whether global moving statistics is used instead of local batch-norm for BatchNorm layers.
+    bn_cudnn_off : bool, default False
+        Whether to disable CUDNN batch normalization operator.
+    bottleneck : bool, default True
+        Whether to use a bottleneck or simple block in units.
+    conv1_stride : bool, default False
+        Whether to use stride in the first or the second convolution layer of the block.
+    """
+    def __init__(self,
+                 in_channels,
+                 out_channels,
+                 strides,
+                 padding=1,
+                 dilation=1,
+                 use_bias=False,
+                 use_bn=True,
+                 bn_use_global_stats=False,
+                 bn_cudnn_off=False,
+                 bottleneck=True,
+                 conv1_stride=False,
+                 **kwargs):
+        super(NonResUnit, self).__init__(**kwargs)
+        self.resize_identity = (in_channels != out_channels) or (strides != 1)
+
+        with self.name_scope():
+            if bottleneck:
+                self.body = ResBottleneck(
+                    in_channels=in_channels,
+                    out_channels=out_channels,
+                    strides=strides,
+                    padding=padding,
+                    dilation=dilation,
+                    bn_use_global_stats=bn_use_global_stats,
+                    bn_cudnn_off=bn_cudnn_off,
+                    conv1_stride=conv1_stride)
+            else:
+                self.body = NonResBlock(
+                    in_channels=in_channels,
+                    out_channels=out_channels,
+                    strides=strides,
+                    use_bias=use_bias,
+                    use_bn=use_bn,
+                    bn_use_global_stats=bn_use_global_stats,
+                    bn_cudnn_off=bn_cudnn_off)
+            if self.resize_identity:
+                self.identity_conv = conv1x1_block(
+                    in_channels=in_channels,
+                    out_channels=out_channels,
+                    strides=strides,
+                    use_bias=use_bias,
+                    use_bn=use_bn,
+                    bn_use_global_stats=bn_use_global_stats,
+                    bn_cudnn_off=bn_cudnn_off,
+                    activation=None)
+            self.activ = nn.Activation("relu")
+
+    def hybrid_forward(self, F, x):
+        x = self.body(x) 
+        # NO skip connection - LIV
+        x = self.activ(x)
+        return x
+
+"""
+LIV END
+"""
+
 class ResInitBlock(HybridBlock):
     """
     ResNet specific initial block.

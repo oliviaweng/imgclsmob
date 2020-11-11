@@ -866,6 +866,8 @@ def main():
         loss_kwargs.update(ds_metainfo.loss_extra_kwargs)
     loss_func = get_loss(ds_metainfo.loss_name, loss_kwargs)
 
+    print(net)
+
     train_net(
         batch_size=batch_size,
         num_epochs=args.num_epochs,

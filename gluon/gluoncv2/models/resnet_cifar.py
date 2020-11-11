@@ -17,7 +17,7 @@ import os
 from mxnet import cpu
 from mxnet.gluon import nn, HybridBlock
 from .common import conv3x3_block
-from .resnet import ResUnit
+from .resnet import ResUnit, NonResUnit # LIV
 
 
 class CIFARResNet(HybridBlock):
@@ -50,6 +50,7 @@ class CIFARResNet(HybridBlock):
                  in_channels=3,
                  in_size=(32, 32),
                  classes=10,
+                 num_non_res=0,
                  **kwargs):
         super(CIFARResNet, self).__init__(**kwargs)
         self.in_size = in_size
@@ -67,13 +68,22 @@ class CIFARResNet(HybridBlock):
                 with stage.name_scope():
                     for j, out_channels in enumerate(channels_per_stage):
                         strides = 2 if (j == 0) and (i != 0) else 1
-                        stage.add(ResUnit(
-                            in_channels=in_channels,
-                            out_channels=out_channels,
-                            strides=strides,
-                            bn_use_global_stats=bn_use_global_stats,
-                            bottleneck=bottleneck,
-                            conv1_stride=False))
+                        if i < num_non_res:
+                            stage.add(NonResUnit(
+                                in_channels=in_channels,
+                                out_channels=out_channels,
+                                strides=strides,
+                                bn_use_global_stats=bn_use_global_stats,
+                                bottleneck=bottleneck,
+                                conv1_stride=False))
+                        else: 
+                            stage.add(ResUnit(
+                                in_channels=in_channels,
+                                out_channels=out_channels,
+                                strides=strides,
+                                bn_use_global_stats=bn_use_global_stats,
+                                bottleneck=bottleneck,
+                                conv1_stride=False))
                         in_channels = out_channels
                 self.features.add(stage)
             self.features.add(nn.AvgPool2D(
@@ -169,6 +179,7 @@ def get_nonresnet_cifar(classes,
                      pretrained=False,
                      ctx=cpu(),
                      root=os.path.join("~", ".mxnet", "models"),
+                     num_non_res=0,
                      **kwargs):
     """
     Create ResNet model for CIFAR with specific parameters.
@@ -212,6 +223,7 @@ def get_nonresnet_cifar(classes,
         init_block_channels=init_block_channels,
         bottleneck=bottleneck,
         classes=classes,
+        num_non_res=num_non_res,
         **kwargs)
 
     if pretrained:
@@ -244,7 +256,10 @@ def nonresnet20_cifar10(classes=10, **kwargs):
     root : str, default '~/.mxnet/models'
         Location for keeping the model parameters.
     """
-    return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="resnet20_cifar10", **kwargs)
+    num_non_res = 1
+    print('getting NONresnet20 for cifar10 with num_non_res=', num_non_res)
+    return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="resnet20_cifar10", 
+    num_non_res=num_non_res, **kwargs)
 
 
 """
