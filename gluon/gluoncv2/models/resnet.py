@@ -350,16 +350,6 @@ class NonResUnit(HybridBlock):
                     use_bn=use_bn,
                     bn_use_global_stats=bn_use_global_stats,
                     bn_cudnn_off=bn_cudnn_off)
-            if self.resize_identity:
-                self.identity_conv = conv1x1_block(
-                    in_channels=in_channels,
-                    out_channels=out_channels,
-                    strides=strides,
-                    use_bias=use_bias,
-                    use_bn=use_bn,
-                    bn_use_global_stats=bn_use_global_stats,
-                    bn_cudnn_off=bn_cudnn_off,
-                    activation=None)
             self.activ = nn.Activation("relu")
 
     def hybrid_forward(self, F, x):
