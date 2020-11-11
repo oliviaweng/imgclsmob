@@ -790,6 +790,7 @@ def main():
         pretrained_model_file_path=args.resume.strip(),
         dtype=args.dtype,
         net_extra_kwargs=ds_metainfo.train_net_extra_kwargs,
+        load_ignore_extra=True, # Ignore loading leftover skip connections - LIV
         tune_layers=args.tune_layers,
         classes=args.num_classes,
         in_channels=args.in_channels,
