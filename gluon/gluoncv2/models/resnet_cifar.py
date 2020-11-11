@@ -3,7 +3,8 @@
     Original paper: 'Deep Residual Learning for Image Recognition,' https://arxiv.org/abs/1512.03385.
 """
 
-__all__ = ['CIFARResNet', 'resnet20_cifar10', 'resnet20_cifar100', 'resnet20_svhn',
+__all__ = ['CIFARResNet', 'nonresnet20_cifar10', # LIV
+           'resnet20_cifar10', 'resnet20_cifar100', 'resnet20_svhn',
            'resnet56_cifar10', 'resnet56_cifar100', 'resnet56_svhn',
            'resnet110_cifar10', 'resnet110_cifar100', 'resnet110_svhn',
            'resnet164bn_cifar10', 'resnet164bn_cifar100', 'resnet164bn_svhn',
@@ -155,6 +156,100 @@ def get_resnet_cifar(classes,
 
     return net
 
+
+"""
+LIV
+"""
+
+
+def get_nonresnet_cifar(classes,
+                     blocks,
+                     bottleneck,
+                     model_name=None,
+                     pretrained=False,
+                     ctx=cpu(),
+                     root=os.path.join("~", ".mxnet", "models"),
+                     **kwargs):
+    """
+    Create ResNet model for CIFAR with specific parameters.
+
+    Parameters:
+    ----------
+    classes : int
+        Number of classification classes.
+    blocks : int
+        Number of blocks.
+    bottleneck : bool
+        Whether to use a bottleneck or simple block in units.
+    model_name : str or None, default None
+        Model name for loading pretrained model.
+    pretrained : bool, default False
+        Whether to load the pretrained weights for model.
+    ctx : Context, default CPU
+        The context in which to load the pretrained weights.
+    root : str, default '~/.mxnet/models'
+        Location for keeping the model parameters.
+    """
+    assert (classes in [10, 100])
+
+    if bottleneck:
+        assert ((blocks - 2) % 9 == 0)
+        layers = [(blocks - 2) // 9] * 3
+    else:
+        assert ((blocks - 2) % 6 == 0)
+        layers = [(blocks - 2) // 6] * 3
+
+    channels_per_layers = [16, 32, 64]
+    init_block_channels = 16
+
+    channels = [[ci] * li for (ci, li) in zip(channels_per_layers, layers)]
+
+    if bottleneck:
+        channels = [[cij * 4 for cij in ci] for ci in channels]
+
+    net = CIFARResNet(
+        channels=channels,
+        init_block_channels=init_block_channels,
+        bottleneck=bottleneck,
+        classes=classes,
+        **kwargs)
+
+    if pretrained:
+        if (model_name is None) or (not model_name):
+            raise ValueError("Parameter `model_name` should be properly initialized for loading pretrained model.")
+        from .model_store import get_model_file
+        net.load_parameters(
+            filename=get_model_file(
+                model_name=model_name,
+                local_model_store_dir_path=root),
+            ctx=ctx)
+
+    return net
+
+
+
+
+def nonresnet20_cifar10(classes=10, **kwargs):
+    """
+    ResNet-20 model for CIFAR-10 from 'Deep Residual Learning for Image Recognition,' https://arxiv.org/abs/1512.03385.
+
+    Parameters:
+    ----------
+    classes : int, default 10
+        Number of classification classes.
+    pretrained : bool, default False
+        Whether to load the pretrained weights for model.
+    ctx : Context, default CPU
+        The context in which to load the pretrained weights.
+    root : str, default '~/.mxnet/models'
+        Location for keeping the model parameters.
+    """
+    return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="resnet20_cifar10", **kwargs)
+
+
+"""
+LIV END
+"""
 
 def resnet20_cifar10(classes=10, **kwargs):
     """
