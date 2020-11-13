@@ -164,10 +164,25 @@ def prepare_model(model_name,
             param.initialize(initializer, ctx=ctx)
 
     # Freeze entire network - LIV
+
+    # print('gamma')
+    # print(net._collect_params_with_prefix()['features.1.0.body.conv1.bn.gamma'].grad_req)
+    # print('beta')
+    # print(net._collect_params_with_prefix()['features.1.0.body.conv1.bn.beta'].grad_req)
+    # print('running mean')
+    # print(net._collect_params_with_prefix()['features.1.0.body.conv1.bn.running_mean'].grad_req)
+    # print('running var')
+    # print(net._collect_params_with_prefix()['features.1.0.body.conv1.bn.running_var'].grad_req)
+
+
     net.collect_params().setattr('grad_req', 'null')
 
     # Unfreeze non res stack 1 conv1 layer
     net._collect_params_with_prefix()['features.1.0.body.conv1.conv.weight'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.1.0.body.conv1.bn.gamma'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.1.0.body.conv1.bn.beta'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.1.0.body.conv1.bn.running_mean'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.1.0.body.conv1.bn.running_var'].grad_req = 'write'
 
     for params in net.collect_params().values():
         if params.grad_req == 'write':
