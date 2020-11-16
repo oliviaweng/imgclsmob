@@ -222,7 +222,7 @@ class ResUnit(HybridBlock):
         else:
             identity = x
         x = self.body(x, identity) # Pass identity for shorter skip connection - LIV
-        x = self.body(x)
+        # x = self.body(x)
         # x = x + identity
         x = self.activ(x)
         return x
