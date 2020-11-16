@@ -174,7 +174,7 @@ def prepare_model(model_name,
     # print(net._collect_params_with_prefix()['features.1.0.body.conv1.bn.running_var'].grad_req)
 
     # Freeze entire network - LIV
-    net.collect_params().setattr('grad_req', 'null')
+    # net.collect_params().setattr('grad_req', 'null')
 
     # Unfreeze non res stack 1 - conv1 layer
     # net._collect_params_with_prefix()['features.1.0.body.conv1.conv.weight'].grad_req = 'write'
@@ -183,9 +183,9 @@ def prepare_model(model_name,
 
 
     # Unfreeze non res stack 2 - conv1 layer
-    net._collect_params_with_prefix()['features.2.0.body.conv1.conv.weight'].grad_req = 'write'
-    net._collect_params_with_prefix()['features.2.0.body.conv1.bn.gamma'].grad_req = 'write'
-    net._collect_params_with_prefix()['features.2.0.body.conv1.bn.beta'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.2.0.body.conv1.conv.weight'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.2.0.body.conv1.bn.gamma'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.2.0.body.conv1.bn.beta'].grad_req = 'write'
 
 
     # Unfreeze non res stack 3 - conv1 layer
@@ -194,9 +194,9 @@ def prepare_model(model_name,
     # net._collect_params_with_prefix()['features.3.0.body.conv1.bn.beta'].grad_req = 'write'
 
 
-    for params in net.collect_params().values():
-        if params.grad_req == 'write':
-            print('unfrozen param!')
+    # for params in net.collect_params().values():
+    #     if params.grad_req == 'write':
+    #         print('unfrozen param!')
 
 
 
