@@ -63,9 +63,10 @@ class ResBlock(HybridBlock):
                 bn_cudnn_off=bn_cudnn_off,
                 activation=None)
 
-    def hybrid_forward(self, F, x, identity):
+    def hybrid_forward(self, F, x):
+    # def hybrid_forward(self, F, x, identity):
         x = self.conv1(x)
-        x = x + identity # Shorter skip connection - LIV
+        # x = x + identity # Shorter skip connection - LIV
         x = self.conv2(x)
         return x
 
@@ -220,8 +221,9 @@ class ResUnit(HybridBlock):
             identity = self.identity_conv(x)
         else:
             identity = x
-        x = self.body(x, identity) # Pass identity for shorter skip connection - LIV
-        # x = x + identity
+        # x = self.body(x, identity) # Pass identity for shorter skip connection - LIV
+        x = self.body(x)
+        x = x + identity
         x = self.activ(x)
         return x
 
