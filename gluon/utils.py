@@ -194,9 +194,9 @@ def prepare_model(model_name,
     # net._collect_params_with_prefix()['features.3.0.body.conv1.bn.beta'].grad_req = 'write'
 
 
-    for params in net.collect_params().values():
-        if params.grad_req == 'write':
-            print('unfrozen param!')
+    # for params in net.collect_params().values():
+    #     if params.grad_req == 'write':
+    #         print('unfrozen param!')
 
 
 
