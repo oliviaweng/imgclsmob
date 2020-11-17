@@ -177,22 +177,30 @@ def prepare_model(model_name,
     net.collect_params().setattr('grad_req', 'null')
 
     # Unfreeze non res stack 1 - conv1 layer
-    net._collect_params_with_prefix()['features.1.0.body.conv1.conv.weight'].grad_req = 'write'
-    net._collect_params_with_prefix()['features.1.0.body.conv1.bn.gamma'].grad_req = 'write'
-    net._collect_params_with_prefix()['features.1.0.body.conv1.bn.beta'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.1.0.body.conv1.conv.weight'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.1.0.body.conv1.bn.gamma'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.1.0.body.conv1.bn.beta'].grad_req = 'write'
 
-    net._collect_params_with_prefix()['features.1.1.body.conv1.conv.weight'].grad_req = 'write'
-    net._collect_params_with_prefix()['features.1.1.body.conv1.bn.gamma'].grad_req = 'write'
-    net._collect_params_with_prefix()['features.1.1.body.conv1.bn.beta'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.1.1.body.conv1.conv.weight'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.1.1.body.conv1.bn.gamma'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.1.1.body.conv1.bn.beta'].grad_req = 'write'
 
-    net._collect_params_with_prefix()['features.1.2.body.conv1.conv.weight'].grad_req = 'write'
-    net._collect_params_with_prefix()['features.1.2.body.conv1.bn.gamma'].grad_req = 'write'
-    net._collect_params_with_prefix()['features.1.2.body.conv1.bn.beta'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.1.2.body.conv1.conv.weight'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.1.2.body.conv1.bn.gamma'].grad_req = 'write'
+    # net._collect_params_with_prefix()['features.1.2.body.conv1.bn.beta'].grad_req = 'write'
 
     # Unfreeze non res stack 2 - conv1 layer
-    # net._collect_params_with_prefix()['features.2.0.body.conv1.conv.weight'].grad_req = 'write'
-    # net._collect_params_with_prefix()['features.2.0.body.conv1.bn.gamma'].grad_req = 'write'
-    # net._collect_params_with_prefix()['features.2.0.body.conv1.bn.beta'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.2.0.body.conv1.conv.weight'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.2.0.body.conv1.bn.gamma'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.2.0.body.conv1.bn.beta'].grad_req = 'write'
+
+    net._collect_params_with_prefix()['features.2.1.body.conv1.conv.weight'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.2.1.body.conv1.bn.gamma'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.2.1.body.conv1.bn.beta'].grad_req = 'write'
+
+    net._collect_params_with_prefix()['features.2.2.body.conv1.conv.weight'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.2.2.body.conv1.bn.gamma'].grad_req = 'write'
+    net._collect_params_with_prefix()['features.2.2.body.conv1.bn.beta'].grad_req = 'write'
 
 
     # Unfreeze non res stack 3 - conv1 layer
