@@ -178,7 +178,7 @@ def prepare_model(model_name,
 
     # Unfreeze non res stack conv1 layer
     stack = 1 # Which stack in which to unfreeze layers
-    num_layers = 3 # Num layers in the stack to unfreeze
+    num_layers = 1 # Num layers in the stack to unfreeze
     start_layer = 0 # Layer at which to start unfreezing
     for i in range(num_layers):
         j = str(start_layer + i)
