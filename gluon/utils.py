@@ -177,10 +177,11 @@ def prepare_model(model_name,
     net.collect_params().setattr('grad_req', 'null')
 
     # Unfreeze non res stack conv1 layer
-    stack = 1 # Which stack to unfreeze 
-    num_layers = 9 # Num layers in the stack to unfreeze
+    stack = 1 # Which stack in which to unfreeze layers
+    num_layers = 3 # Num layers in the stack to unfreeze
+    start_layer = 0 # Layer at which to start unfreezing
     for i in range(num_layers):
-        j = str(i)
+        j = str(start_layer + i)
         stk = str(stack)
         weight_key = 'features.' + stk + '.' + j + '.body.conv1.conv.weight'
         gamma_key = 'features.' + stk + '.' + j + '.body.conv1.bn.gamma'

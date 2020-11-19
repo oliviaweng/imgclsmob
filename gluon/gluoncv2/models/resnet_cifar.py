@@ -50,7 +50,8 @@ class CIFARResNet(HybridBlock):
                  in_channels=3,
                  in_size=(32, 32),
                  classes=10,
-                 num_non_res=0,
+                 num_non_res_stk=0,
+                 num_non_res_blocks=0,
                  **kwargs):
         super(CIFARResNet, self).__init__(**kwargs)
         self.in_size = in_size
@@ -68,7 +69,7 @@ class CIFARResNet(HybridBlock):
                 with stage.name_scope():
                     for j, out_channels in enumerate(channels_per_stage):
                         strides = 2 if (j == 0) and (i != 0) else 1
-                        if i < num_non_res:
+                        if i < num_non_res_stk and j < num_non_res_blocks: # LIV
                             stage.add(NonResUnit(
                                 in_channels=in_channels,
                                 out_channels=out_channels,
@@ -170,77 +171,6 @@ def get_resnet_cifar(classes,
 """
 LIV
 """
-
-
-def get_nonresnet_cifar(classes,
-                     blocks,
-                     bottleneck,
-                     model_name=None,
-                     pretrained=False,
-                     ctx=cpu(),
-                     root=os.path.join("~", ".mxnet", "models"),
-                     num_non_res=0,
-                     **kwargs):
-    """
-    Create ResNet model for CIFAR with specific parameters.
-
-    Parameters:
-    ----------
-    classes : int
-        Number of classification classes.
-    blocks : int
-        Number of blocks.
-    bottleneck : bool
-        Whether to use a bottleneck or simple block in units.
-    model_name : str or None, default None
-        Model name for loading pretrained model.
-    pretrained : bool, default False
-        Whether to load the pretrained weights for model.
-    ctx : Context, default CPU
-        The context in which to load the pretrained weights.
-    root : str, default '~/.mxnet/models'
-        Location for keeping the model parameters.
-    """
-    assert (classes in [10, 100])
-
-    if bottleneck:
-        assert ((blocks - 2) % 9 == 0)
-        layers = [(blocks - 2) // 9] * 3
-    else:
-        assert ((blocks - 2) % 6 == 0)
-        layers = [(blocks - 2) // 6] * 3
-
-    channels_per_layers = [16, 32, 64]
-    init_block_channels = 16
-
-    channels = [[ci] * li for (ci, li) in zip(channels_per_layers, layers)]
-
-    if bottleneck:
-        channels = [[cij * 4 for cij in ci] for ci in channels]
-
-    net = CIFARResNet(
-        channels=channels,
-        init_block_channels=init_block_channels,
-        bottleneck=bottleneck,
-        classes=classes,
-        num_non_res=num_non_res,
-        **kwargs)
-
-    if pretrained:
-        if (model_name is None) or (not model_name):
-            raise ValueError("Parameter `model_name` should be properly initialized for loading pretrained model.")
-        from .model_store import get_model_file
-        net.load_parameters(
-            filename=get_model_file(
-                model_name=model_name,
-                local_model_store_dir_path=root),
-            ctx=ctx)
-
-    return net
-
-
-
-
 def nonresnet20_cifar10(classes=10, **kwargs):
     """
     NON ResNet-20 model for CIFAR-10 from 'Deep Residual Learning for Image Recognition,' https://arxiv.org/abs/1512.03385.
@@ -256,10 +186,12 @@ def nonresnet20_cifar10(classes=10, **kwargs):
     root : str, default '~/.mxnet/models'
         Location for keeping the model parameters.
     """
-    num_non_res = 3
+    num_non_res_stk = 3
+    num_non_res_blocks = 3
     print('getting NONresnet20 for cifar10 with num_non_res=', num_non_res)
-    return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="resnet20_cifar10", 
-    num_non_res=num_non_res, **kwargs)
+    return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="nonresnet20_cifar10", 
+    num_non_res_stk=num_non_res,
+    num_non_res_blocks=num_non_res_blocks, **kwargs)
 
 
 
@@ -278,9 +210,11 @@ def nonresnet56_cifar10(classes=10, **kwargs):
     root : str, default '~/.mxnet/models'
         Location for keeping the model parameters.
     """
-    num_non_res = 1
+    num_non_res_stk = 1
+    num_non_res_blocks = 3
     return get_resnet_cifar(classes=classes, blocks=56, bottleneck=False, model_name="nonresnet56_cifar10",
-    num_non_res=num_non_res, **kwargs)
+    num_non_res_stk=num_non_res_stk,
+    num_non_res_blocks=num_non_res_blocks, **kwargs)
 
 
 """
