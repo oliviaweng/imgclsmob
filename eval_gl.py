@@ -315,6 +315,15 @@ def test_model(args):
         calc_flops=args.calc_flops,
         calc_flops_only=args.calc_flops_only,
         extended_log=True)
+    """
+    LIV
+    """
+    # Export model
+    # net.export("no-skip-resnet20-cifar10")
+
+    """
+    LIV END
+    """
     return acc_values[ds_metainfo.saver_acc_ind] if len(acc_values) > 0 else None
 
 

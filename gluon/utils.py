@@ -163,40 +163,32 @@ def prepare_model(model_name,
                 continue
             param.initialize(initializer, ctx=ctx)
 
-    # Debugging
-    # print('gamma')
-    # print(net._collect_params_with_prefix()['features.1.0.body.conv1.bn.gamma'].grad_req)
-    # print('beta')
-    # print(net._collect_params_with_prefix()['features.1.0.body.conv1.bn.beta'].grad_req)
-    # print('running mean')
-    # print(net._collect_params_with_prefix()['features.1.0.body.conv1.bn.running_mean'].grad_req)
-    # print('running var')
-    # print(net._collect_params_with_prefix()['features.1.0.body.conv1.bn.running_var'].grad_req)
+    training = True
+    if training: 
+        # Freeze entire network - LIV
+        net.collect_params().setattr('grad_req', 'null')
 
-    # Freeze entire network - LIV
-    net.collect_params().setattr('grad_req', 'null')
+        # Unfreeze non res stack conv1 layer
+        stack = 1 # Which stack in which to unfreeze layers
+        num_layers = 9 # Num layers in the stack to unfreeze
+        start_layer = 0 # Layer at which to start unfreezing
+        for i in range(num_layers):
+            j = str(start_layer + i)
+            stk = str(stack)
+            weight_key = 'features.' + stk + '.' + j + '.body.conv1.conv.weight'
+            gamma_key = 'features.' + stk + '.' + j + '.body.conv1.bn.gamma'
+            beta_key = 'features.' + stk + '.' + j + '.body.conv1.bn.beta'
 
-    # Unfreeze non res stack conv1 layer
-    stack = 1 # Which stack in which to unfreeze layers
-    num_layers = 9 # Num layers in the stack to unfreeze
-    start_layer = 0 # Layer at which to start unfreezing
-    for i in range(num_layers):
-        j = str(start_layer + i)
-        stk = str(stack)
-        weight_key = 'features.' + stk + '.' + j + '.body.conv1.conv.weight'
-        gamma_key = 'features.' + stk + '.' + j + '.body.conv1.bn.gamma'
-        beta_key = 'features.' + stk + '.' + j + '.body.conv1.bn.beta'
+            net._collect_params_with_prefix()[weight_key].grad_req = 'write'
+            net._collect_params_with_prefix()[gamma_key].grad_req = 'write'
+            net._collect_params_with_prefix()[beta_key].grad_req = 'write'
 
-        net._collect_params_with_prefix()[weight_key].grad_req = 'write'
-        net._collect_params_with_prefix()[gamma_key].grad_req = 'write'
-        net._collect_params_with_prefix()[beta_key].grad_req = 'write'
-
-    num_unfrozen_params = 0
-    for params in net.collect_params().values():
-        if params.grad_req == 'write':
-            num_unfrozen_params += 1
-    
-    print('num_unfrozen_params =', num_unfrozen_params)
+        num_unfrozen_params = 0
+        for params in net.collect_params().values():
+            if params.grad_req == 'write':
+                num_unfrozen_params += 1
+        
+        print('num_unfrozen_params =', num_unfrozen_params)
 
 
 

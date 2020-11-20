@@ -188,9 +188,9 @@ def nonresnet20_cifar10(classes=10, **kwargs):
     """
     num_non_res_stk = 3
     num_non_res_blocks = 3
-    print('getting NONresnet20 for cifar10 with num_non_res=', num_non_res)
+    print('getting NONresnet20 for cifar10 with num_non_res=', num_non_res_stk)
     return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="nonresnet20_cifar10", 
-    num_non_res_stk=num_non_res,
+    num_non_res_stk=num_non_res_stk,
     num_non_res_blocks=num_non_res_blocks, **kwargs)
 
 
@@ -211,7 +211,7 @@ def nonresnet56_cifar10(classes=10, **kwargs):
         Location for keeping the model parameters.
     """
     num_non_res_stk = 1
-    num_non_res_blocks = 1
+    num_non_res_blocks = 2
     return get_resnet_cifar(classes=classes, blocks=56, bottleneck=False, model_name="nonresnet56_cifar10",
     num_non_res_stk=num_non_res_stk,
     num_non_res_blocks=num_non_res_blocks, **kwargs)
