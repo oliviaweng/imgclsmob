@@ -210,8 +210,8 @@ def nonresnet56_cifar10(classes=10, **kwargs):
     root : str, default '~/.mxnet/models'
         Location for keeping the model parameters.
     """
-    num_non_res_stk = 1
-    num_non_res_blocks = 3
+    num_non_res_stk = 2
+    num_non_res_blocks = 1
     return get_resnet_cifar(classes=classes, blocks=56, bottleneck=False, model_name="nonresnet56_cifar10",
     num_non_res_stk=num_non_res_stk,
     num_non_res_blocks=num_non_res_blocks, **kwargs)
