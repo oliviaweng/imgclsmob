@@ -1220,7 +1220,7 @@ def convert_gl2pt(dst_params_file_path,
             obj=dst_params,
             f=dst_params_file_path)
     else: 
-        torch.save(dst_net.state_dict(), dst_params_file_path)
+        torch.save(dst_net, dst_params_file_path)
 
 
 def convert_pt2gl(dst_net,
@@ -1490,7 +1490,8 @@ def main():
             dst_params=dst_params,
             dst_param_keys=dst_param_keys,
             src_params=src_params,
-            src_param_keys=src_param_keys)
+            src_param_keys=src_param_keys,
+	    dst_net=dst_net)
     elif args.src_fwk == "gluon" and args.dst_fwk == "chainer":
         convert_gl2ch(
             dst_net=dst_net,
