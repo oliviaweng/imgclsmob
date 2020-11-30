@@ -293,14 +293,6 @@ class NonResUnit(nn.Module):
                 stride=stride,
                 bias=bias,
                 use_bn=use_bn)
-        if self.resize_identity:
-            self.identity_conv = conv1x1_block(
-                in_channels=in_channels,
-                out_channels=out_channels,
-                stride=stride,
-                bias=bias,
-                use_bn=use_bn,
-                activation=None)
         self.activ = nn.ReLU(inplace=True)
 
     def forward(self, x):

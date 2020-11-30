@@ -1209,14 +1209,18 @@ def convert_gl2pt(dst_params_file_path,
                   dst_params,
                   dst_param_keys,
                   src_params,
-                  src_param_keys):
+                  src_param_keys,
+                  dst_net=None):
     import torch
     for i, (src_key, dst_key) in enumerate(zip(src_param_keys, dst_param_keys)):
         assert (tuple(dst_params[dst_key].size()) == src_params[src_key].shape)
         dst_params[dst_key] = torch.from_numpy(src_params[src_key]._data[0].asnumpy())
-    torch.save(
-        obj=dst_params,
-        f=dst_params_file_path)
+    if dst_net is None:
+        torch.save(
+            obj=dst_params,
+            f=dst_params_file_path)
+    else: 
+        torch.save(dst_net.state_dict(), dst_params_file_path)
 
 
 def convert_pt2gl(dst_net,
