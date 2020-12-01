@@ -51,7 +51,7 @@ class CIFARResNet(HybridBlock):
                  in_size=(32, 32),
                  classes=10,
                  num_non_res_stk=0,
-                 num_non_res_blocks=0,
+                 non_res_blocks=[],
                  **kwargs):
         super(CIFARResNet, self).__init__(**kwargs)
         self.in_size = in_size
@@ -69,7 +69,8 @@ class CIFARResNet(HybridBlock):
                 with stage.name_scope():
                     for j, out_channels in enumerate(channels_per_stage):
                         strides = 2 if (j == 0) and (i != 0) else 1
-                        if i < num_non_res_stk and j < num_non_res_blocks: # LIV
+                        res_blk_i = i * num_non_res_stk + j
+                        if res_blk_i in non_res_blocks: # LIV
                             stage.add(NonResUnit(
                                 in_channels=in_channels,
                                 out_channels=out_channels,
@@ -187,11 +188,11 @@ def nonresnet20_cifar10(classes=10, **kwargs):
         Location for keeping the model parameters.
     """
     num_non_res_stk = 3
-    num_non_res_blocks = 3
-    print('getting NONresnet20 for cifar10 with num_non_res=', num_non_res_stk)
+    non_res_blocks = list(range(6, 9))
+    print('getting NONresnet20 for cifar10 with non_res_blocks=', non_res_blocks)
     return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="nonresnet20_cifar10", 
     num_non_res_stk=num_non_res_stk,
-    num_non_res_blocks=num_non_res_blocks, **kwargs)
+    non_res_blocks=non_res_blocks, **kwargs)
 
 
 
@@ -210,11 +211,11 @@ def nonresnet56_cifar10(classes=10, **kwargs):
     root : str, default '~/.mxnet/models'
         Location for keeping the model parameters.
     """
-    num_non_res_stk = 2
-    num_non_res_blocks = 1
+    num_non_res_stk = 3
+    non_res_blocks = list(range(26, 27)) # Total 27 -- 9 per stack
     return get_resnet_cifar(classes=classes, blocks=56, bottleneck=False, model_name="nonresnet56_cifar10",
     num_non_res_stk=num_non_res_stk,
-    num_non_res_blocks=num_non_res_blocks, **kwargs)
+    non_res_blocks=non_res_blocks, **kwargs)
 
 
 """

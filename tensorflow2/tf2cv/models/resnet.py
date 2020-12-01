@@ -190,25 +190,25 @@ class ResUnit(nn.Layer):
                 use_bn=use_bn,
                 data_format=data_format,
                 name="body")
-        if self.resize_identity:
-            self.identity_conv = conv1x1_block(
-                in_channels=in_channels,
-                out_channels=out_channels,
-                strides=strides,
-                use_bias=use_bias,
-                use_bn=use_bn,
-                activation=None,
-                data_format=data_format,
-                name="identity_conv")
+        # if self.resize_identity:
+        #     self.identity_conv = conv1x1_block(
+        #         in_channels=in_channels,
+        #         out_channels=out_channels,
+        #         strides=strides,
+        #         use_bias=use_bias,
+        #         use_bn=use_bn,
+        #         activation=None,
+        #         data_format=data_format,
+        #         name="identity_conv")
         self.activ = nn.ReLU()
 
     def call(self, x, training=None):
-        if self.resize_identity:
-            identity = self.identity_conv(x, training=training)
-        else:
-            identity = x
+        # if self.resize_identity:
+        #     identity = self.identity_conv(x, training=training)
+        # else:
+        #     identity = x
         x = self.body(x, training=training)
-        x = x + identity
+        # x = x + identity
         x = self.activ(x)
         return x
 

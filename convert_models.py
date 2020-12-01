@@ -986,7 +986,8 @@ def convert_gl2tf2(dst_net,
             src_weight = src_params[src_key]._data[0].asnumpy()
             process_width(src_key, dst_key, src_weight)
 
-    dst_net.save_weights(dst_params_file_path)
+    # dst_net.save_weights(dst_params_file_path)
+    dst_net.save(dst_params_file_path) # Save entire model - LIV
 
 
 def convert_pt2pt(dst_params_file_path,

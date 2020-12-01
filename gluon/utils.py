@@ -163,14 +163,15 @@ def prepare_model(model_name,
                 continue
             param.initialize(initializer, ctx=ctx)
 
-    training = False
+    training = True
     if training: 
         # Freeze entire network - LIV
         net.collect_params().setattr('grad_req', 'null')
 
-        # Unfreeze non res stack conv1 layer
-        stack = 2 # Which stack in which to unfreeze layers
-        num_layers = 1 # Num layers in the stack to unfreeze
+        # Unfreeze conv1 layer in these non res blocks
+        non_res_blocks = list(range(6, 9))
+        stack = 3 # Which stack in which to unfreeze layers
+        num_layers = 3 # Num layers in the stack to unfreeze
         start_layer = 0 # Layer at which to start unfreezing
         for i in range(num_layers):
             j = str(start_layer + i)
@@ -178,6 +179,8 @@ def prepare_model(model_name,
             weight_key = 'features.' + stk + '.' + j + '.body.conv1.conv.weight'
             gamma_key = 'features.' + stk + '.' + j + '.body.conv1.bn.gamma'
             beta_key = 'features.' + stk + '.' + j + '.body.conv1.bn.beta'
+
+            print('unfreezing', weight_key)
 
             net._collect_params_with_prefix()[weight_key].grad_req = 'write'
             net._collect_params_with_prefix()[gamma_key].grad_req = 'write'
