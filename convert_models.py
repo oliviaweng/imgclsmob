@@ -965,6 +965,8 @@ def convert_gl2tf2(dst_net,
                 src_key, dst_key, src_weight.shape, tuple(dst_weight.shape))
         dst_weight.assign(src_weight)
 
+    print(src_param_keys)
+    print(dst_param_keys)
     for i, (src_key, dst_key) in enumerate(zip(src_param_keys, dst_param_keys)):
         # print("src_key={},\tsrc_key2={},\tdst_key={}".format(src_key, src_params[src_key].name, dst_key))
         if dst_key.find("convgroup") >= 0:
