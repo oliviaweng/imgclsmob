@@ -50,7 +50,7 @@ class CIFARResNet(HybridBlock):
                  in_channels=3,
                  in_size=(32, 32),
                  classes=10,
-                 num_non_res_stk=0,
+                 num_layers_per_stk=0,
                  non_res_blocks=[],
                  **kwargs):
         super(CIFARResNet, self).__init__(**kwargs)
@@ -69,7 +69,7 @@ class CIFARResNet(HybridBlock):
                 with stage.name_scope():
                     for j, out_channels in enumerate(channels_per_stage):
                         strides = 2 if (j == 0) and (i != 0) else 1
-                        res_blk_i = i * num_non_res_stk + j
+                        res_blk_i = i * num_layers_per_stk + j
                         if res_blk_i in non_res_blocks: # LIV
                             stage.add(NonResUnit(
                                 in_channels=in_channels,
@@ -187,11 +187,11 @@ def nonresnet20_cifar10(classes=10, **kwargs):
     root : str, default '~/.mxnet/models'
         Location for keeping the model parameters.
     """
-    num_non_res_stk = 3
+    num_layers_per_stk = 3
     non_res_blocks = list(range(6, 9))
     print('getting NONresnet20 for cifar10 with non_res_blocks=', non_res_blocks)
     return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="nonresnet20_cifar10", 
-    num_non_res_stk=num_non_res_stk,
+    num_layers_per_stk=num_layers_per_stk,
     non_res_blocks=non_res_blocks, **kwargs)
 
 
@@ -211,10 +211,10 @@ def nonresnet56_cifar10(classes=10, **kwargs):
     root : str, default '~/.mxnet/models'
         Location for keeping the model parameters.
     """
-    num_non_res_stk = 3
-    non_res_blocks = list(range(26, 27)) # Total 27 -- 9 per stack
+    num_layers_per_stk = 9
+    non_res_blocks = list(range(18, 27)) # Total 27 -- 9 per stack
     return get_resnet_cifar(classes=classes, blocks=56, bottleneck=False, model_name="nonresnet56_cifar10",
-    num_non_res_stk=num_non_res_stk,
+    num_layers_per_stk=num_layers_per_stk,
     non_res_blocks=non_res_blocks, **kwargs)
 
 
