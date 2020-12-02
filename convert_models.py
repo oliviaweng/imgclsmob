@@ -949,6 +949,10 @@ def convert_gl2tf2(dst_net,
     dst_param_keys_uniq, dst_param_keys_index = np.unique(dst_param_keys, return_index=True)
     dst_param_keys = list(dst_param_keys_uniq[dst_param_keys_index.argsort()])
 
+    dst_param_keys_out = dst_param_keys[0:2]
+    dst_param_keys_rest = dst_param_keys[2:]
+    dst_param_keys = dst_param_keys_rest + dst_param_keys_out
+
     assert (len(src_param_keys) == len(dst_param_keys))
 
     def process_width(src_key, dst_key, src_weight):
@@ -990,6 +994,7 @@ def convert_gl2tf2(dst_net,
 
     # dst_net.save_weights(dst_params_file_path)
     dst_net.save(dst_params_file_path) # Save entire model - LIV
+
 
 
 def convert_pt2pt(dst_params_file_path,

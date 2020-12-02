@@ -3,7 +3,8 @@
     Original paper: 'Deep Residual Learning for Image Recognition,' https://arxiv.org/abs/1512.03385.
 """
 
-__all__ = ['CIFARResNet', 'nonresnet20_cifar10', 'nonresnet56_cifar10', # LIV
+__all__ = ['CIFARResNet', 'nonresnet20_cifar10', # LIV
+           'nonresnet56_cifar10', 'nonresnet110_cifar10', # LIV
            'resnet20_cifar10', 'resnet20_cifar100', 'resnet20_svhn',
            'resnet56_cifar10', 'resnet56_cifar100', 'resnet56_svhn',
            'resnet110_cifar10', 'resnet110_cifar100', 'resnet110_svhn',
@@ -212,11 +213,32 @@ def nonresnet56_cifar10(classes=10, **kwargs):
         Location for keeping the model parameters.
     """
     num_layers_per_stk = 9
-    non_res_blocks = list(range(0, 1)) + list(range(18, 27)) # Total 27 -- 9 per stack
+    non_res_blocks = list(range(0, 1)) + list(range(18, 27)) # Total 27 ResUnits
     return get_resnet_cifar(classes=classes, blocks=56, bottleneck=False, model_name="nonresnet56_cifar10",
     num_layers_per_stk=num_layers_per_stk,
     non_res_blocks=non_res_blocks, **kwargs)
 
+
+def nonresnet110_cifar10(classes=10, **kwargs):
+    """
+    ResNet-110 model for CIFAR-10 from 'Deep Residual Learning for Image Recognition,' https://arxiv.org/abs/1512.03385.
+
+    Parameters:
+    ----------
+    classes : int, default 10
+        Number of classification classes.
+    pretrained : bool, default False
+        Whether to load the pretrained weights for model.
+    ctx : Context, default CPU
+        The context in which to load the pretrained weights.
+    root : str, default '~/.mxnet/models'
+        Location for keeping the model parameters.
+    """
+    num_layers_per_stk = 18
+    non_res_blocks = list(range(36, 54)) # Total 54 ResUnits
+    return get_resnet_cifar(classes=classes, blocks=110, bottleneck=False, model_name="nonresnet110_cifar10",
+    num_layers_per_stk=num_layers_per_stk,
+    non_res_blocks=non_res_blocks, **kwargs)
 
 """
 LIV END
