@@ -163,7 +163,7 @@ def prepare_model(model_name,
                 continue
             param.initialize(initializer, ctx=ctx)
 
-    training = True
+    training = False
     if training: 
         # Freeze entire network - LIV
         net.collect_params().setattr('grad_req', 'null')
