@@ -163,8 +163,8 @@ def prepare_model(model_name,
                 continue
             param.initialize(initializer, ctx=ctx)
 
-    training = False
-    if training: 
+    freezing = False
+    if freezing: 
         # Freeze entire network - LIV
         net.collect_params().setattr('grad_req', 'null')
 
