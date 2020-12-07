@@ -267,7 +267,7 @@ def nonresnet20_cifar100(classes=100, **kwargs):
 
 
 
-def resnet20_svhn(classes=10, **kwargs):
+def nonresnet20_svhn(classes=10, **kwargs):
     """
     ResNet-20 model for SVHN from 'Deep Residual Learning for Image Recognition,' https://arxiv.org/abs/1512.03385.
 
