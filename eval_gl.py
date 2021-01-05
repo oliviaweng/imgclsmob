@@ -18,6 +18,7 @@ from gluon.dataset_utils import get_val_data_source, get_test_data_source
 from gluon.model_stats import measure_model
 from gluon.gluoncv2.models.model_store import _model_sha1
 
+from mxnet import nd
 
 def add_eval_parser_arguments(parser):
     """
@@ -280,6 +281,10 @@ def test_model(args):
     assert (hasattr(net, "in_size"))
     input_image_size = net.in_size
 
+    # Generate random input to a single residual block
+    # and compute its output
+    run_one_resblock(net)
+
     get_test_data_source_class = get_val_data_source if args.data_subset == "val" else get_test_data_source
     test_data = get_test_data_source_class(
         ds_metainfo=ds_metainfo,
@@ -315,16 +320,31 @@ def test_model(args):
         calc_flops=args.calc_flops,
         calc_flops_only=args.calc_flops_only,
         extended_log=True)
-    """
-    LIV
-    """
-    # Export model
-    # net.export("no-skip-resnet20-cifar10")
 
-    """
-    LIV END
-    """
     return acc_values[ds_metainfo.saver_acc_ind] if len(acc_values) > 0 else None
+
+"""
+Generate random input to a single residual block
+and compute its output
+"""
+def run_one_resblock(net):
+    features = list(net.features)
+    # Input shape is (batch_size, color_channels, height, width)
+    random_input = nd.random.uniform(-1, 1, shape=(1, 3, 32, 32))
+    print('random_input')
+    print(random_input)
+    # Pass input through first convblock
+    res_input = features[0](random_input)
+    # Pass residual block input through first residual block
+    res_output = features[1](res_input)
+
+    print('res_input')
+    print(res_input)
+    print('res_output')
+    print(res_output)
+
+    # Save res_input and res_output to csv
+    
 
 
 def main():
