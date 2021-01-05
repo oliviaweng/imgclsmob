@@ -283,7 +283,7 @@ def nonresnet20_svhn(classes=10, **kwargs):
         Location for keeping the model parameters.
     """
     num_layers_per_stk = 3
-    non_res_blocks = list(range(0, 3))
+    non_res_blocks = list(range(0, 6))
     print('getting NONresnet20 for svhn with non_res_blocks=', non_res_blocks)
     return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="nonresnet20_svhn",
     num_layers_per_stk=num_layers_per_stk,
