@@ -54,12 +54,6 @@ class ResBlock(HybridBlock):
                 use_bn=use_bn,
                 bn_use_global_stats=bn_use_global_stats,
                 bn_cudnn_off=bn_cudnn_off)
-            print('conv1')
-            print('in_channels=', in_channels)
-            print('out_channels=', out_channels)
-            print('conv2')
-            print('in_channels=', out_channels)
-            print('out_channels=', out_channels)
             self.conv2 = conv3x3_block(
                 in_channels=out_channels,
                 out_channels=out_channels,
