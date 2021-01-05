@@ -163,13 +163,13 @@ def prepare_model(model_name,
                 continue
             param.initialize(initializer, ctx=ctx)
 
-    freezing = False
+    freezing = True
     if freezing: 
         # Freeze entire network - LIV
         net.collect_params().setattr('grad_req', 'null')
 
         # Unfreeze conv1 layer in these non res blocks
-        non_res_blocks = list(range(17, 18))
+        non_res_blocks = list(range(0, 3))
         stack = 3 # Which stack in which to unfreeze layers
         num_blocks = len(non_res_blocks) # Num blocks in the stack to unfreeze
         start_layer = 0 # Layer at which to start unfreezing
@@ -193,6 +193,19 @@ def prepare_model(model_name,
         
         print('num_unfrozen_params =', num_unfrozen_params)
 
+    # Write weights to file (npz compressed version)
+    output_weights = False 
+    if output_weights:
+        # Write conv1 and conv2 weights of 1st resblock into file
+        conv1_wts = list(net.features)[1][0].body.conv1.conv.weight.data()
+        conv2_wts = list(net.features)[1][0].body.conv2.conv.weight.data()
+
+        # conv1_wts is of dimension 16x16x3x3
+        with open('nonresblock1-conv1-wts.npz', 'wb') as f:
+            np.savez_compressed(f, conv1_wts)
+
+        with open('nonresblock1-conv2-wts.npz', 'wb') as f:
+            np.savez_compressed(f, conv2_wts)
 
 
     return net

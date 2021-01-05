@@ -71,7 +71,7 @@ class CIFARResNet(HybridBlock):
                 with stage.name_scope():
                     for j, out_channels in enumerate(channels_per_stage):
                         strides = 2 if (j == 0) and (i != 0) else 1
-                        res_blk_i = i * num_layers_per_stk + j
+                        res_blk_i = i * num_layers_per_stk + j # LIV
                         if res_blk_i in non_res_blocks: # LIV
                             stage.add(NonResUnit(
                                 in_channels=in_channels,
@@ -283,7 +283,7 @@ def nonresnet20_svhn(classes=10, **kwargs):
         Location for keeping the model parameters.
     """
     num_layers_per_stk = 3
-    non_res_blocks = list(range(0, 9))
+    non_res_blocks = list(range(0, 3))
     print('getting NONresnet20 for svhn with non_res_blocks=', non_res_blocks)
     return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="nonresnet20_svhn",
     num_layers_per_stk=num_layers_per_stk,
