@@ -19,6 +19,8 @@ import torch.nn.init as init
 from .common import conv3x3_block
 from .resnet import ResUnit, NonResUnit
 
+import brevitas.nn as qnn
+from brevitas.core.quant import QuantType
 
 class CIFARResNet(nn.Module):
     """
@@ -157,6 +159,35 @@ def get_resnet_cifar(num_classes,
 """
 LIV
 """
+
+# class QuantCIFARResNet(nn.Module):
+#     """
+#     Brevitas quantize-aware training for ResNet20 for CIFAR 10
+#     """
+#     def __init__(self,
+#                  channels,
+#                  bitwidth,
+#                  quant_type,
+#                  init_block_channels,
+#                  in_channels=3,
+#                  in_size=(32,32),
+#                  num_classes=10):
+#         super(QuantCifarResNEt, self).__init__()
+#         self.in_size = in_size 
+#         self.num_classes = num_classes
+
+#         self.features = nn.Sequential() 
+#         self.features.add_module("init_block", qnn.QuantConv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, padding=1, stride=1, dilation=1, groups=1, bias=False, weight_bit_width=bitwidth, weight_quant_type=quant_type))
+#         in_channels = init_block_channels
+
+#         for i, channels_per_stage in enumerate(channels):
+#             stage = nn.Sequential() 
+#             for j, out_channels in enumerate(channels_per_stage):
+#                 stride = 2 if (j == 0) and (i != 0) else 1
+
+#                 stage.add_module("unit{}".format(j + 1), QuantResUnit())
+
+
 
 class CIFARNonResNet(nn.Module):
     """
