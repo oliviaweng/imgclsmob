@@ -259,7 +259,7 @@ def nonresnet20_cifar100(classes=100, **kwargs):
         Location for keeping the model parameters.
     """
     num_layers_per_stk = 3
-    non_res_blocks = list(range(0, 6))
+    non_res_blocks = list(range(0, 9))
     print('getting NONresnet20 for cifar100 with non_res_blocks=', non_res_blocks)
     return get_resnet_cifar(classes=classes, blocks=20, bottleneck=False, model_name="nonresnet20_cifar100",
     num_layers_per_stk=num_layers_per_stk,
