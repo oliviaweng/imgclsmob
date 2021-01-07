@@ -170,12 +170,10 @@ def prepare_model(model_name,
         net.collect_params().setattr('grad_req', 'null')
 
         # Unfreeze conv1 layer in these non res blocks
-        non_res_blocks = list(range(0, 3))
-        stack = 1 # Which stack to unfreeze layers in
-        # Adjust above two lines to modify which layers to unfreeze
-
-        num_blocks = len(non_res_blocks) # Num blocks in the stack to unfreeze
+        stack = 2 # Which stack to unfreeze layers in
+        num_blocks = 3 # Num resblocks in the stack to unfreeze
         start_layer = 0 # Block at which to start unfreezing
+        # Adjust above three lines to modify which layers to unfreeze
         for i in range(num_blocks):
             j = str(start_layer + i)
             stk = str(stack)
@@ -196,7 +194,7 @@ def prepare_model(model_name,
         
 
     # Write weights to file (npz compressed version)
-    write_weights_and_bn(net, 1, 0, 'nonres20block1.npz') # first nonresblock
+    # write_weights_and_bn(net, 1, 0, 'nonres20block1.npz') # first nonresblock
    
     return net
 
