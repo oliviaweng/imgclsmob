@@ -196,40 +196,44 @@ def prepare_model(model_name,
         
 
     # Write weights to file (npz compressed version)
-    # write_weights_and_bn(net)
+    write_weights_and_bn(net, 1, 0, 'nonres20block1.npz') # first nonresblock
    
     return net
 
 
 
 """
-Write weights and batch norm arrays into an npz file
+Writes conv1 and conv2 weights of resblock <block> in residual stack 
+<stk_feature_idx> into file
+
+Weights and batch norm arrays are written to an npz file
 in the order: weights, beta, gamma, mean, invstd
 This order is what finnthesizer expects when generating
 weights and activation thresholds for finn-hls
 """
-def write_weights_and_bn(net):
-    vals = []
-    # Write conv1 and conv2 weights of 1st resblock into file
-    conv1 = list(net.features)[1][0].body.conv1
-    # NOTE conv1_wts is of dimension 16x16x3x3
-    print('conv1 shape =', conv1.conv.weight.shape)
-    vals.append(conv1.conv.weight.data().asnumpy())
-    vals.append(conv1.bn.beta.data().asnumpy())
-    vals.append(conv1.bn.gamma.data().asnumpy())
-    vals.append(conv1.bn.running_mean.data().asnumpy())
-    print('conv1 bn running mean\n', conv1.bn.running_mean.data().asnumpy())
-    print('conv1.bn.running_var\n', conv1.bn.running_var.data().asnumpy())
-    invstd = np.reciprocal(np.sqrt(conv1.bn.running_var.data().asnumpy()))
-    print('invstd =', invstd)
-    # vals.append(conv1.bn.running_var)
+def write_weights_and_bn(net, stk_feature_idx, block, file_name):
+    resblock = list(net.features)[stk_feature_idx][block].body
+
+    # NOTE conv1 and conv2 weight matrices are of dimension 16x16x3x3
+    conv1 = resblock.conv1
+    conv2 = resblock.conv2
+
+    conv1_w = conv1.conv.weight.data().asnumpy()
+    conv1_b = conv1.bn.beta.data().asnumpy()
+    conv1_g = conv1.bn.gamma.data().asnumpy()
+    conv1_m = conv1.bn.running_mean.data().asnumpy()
+    conv1_i = np.reciprocal(np.sqrt(conv1.bn.running_var.data().asnumpy()))
+
+    conv2_w = conv2.conv.weight.data().asnumpy()
+    conv2_b = conv2.bn.beta.data().asnumpy()
+    conv2_g = conv2.bn.gamma.data().asnumpy()
+    conv2_m = conv2.bn.running_mean.data().asnumpy()
+    conv2_i = np.reciprocal(np.sqrt(conv2.bn.running_var.data().asnumpy()))
 
 
-    # conv2_wts = list(net.features)[1][0].body.conv2.conv.weight
-    # vals.append(conv2_wts.data())
-
-    # with open('nonres20block1.npz', 'wb') as f:
-    #     np.savez_compressed(f, vals)
+    with open(file_name, 'wb') as f:
+        np.savez(f, conv1_w, conv1_b, conv1_g, conv1_m, \
+            conv1_i, conv2_w, conv2_b, conv2_g, conv2_m, conv2_i)
 
 
 
