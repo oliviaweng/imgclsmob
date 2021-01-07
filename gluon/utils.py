@@ -163,16 +163,19 @@ def prepare_model(model_name,
                 continue
             param.initialize(initializer, ctx=ctx)
 
-    freezing = False
+    freezing = True
+    print('{}'.format('frozen training' if freezing else 'unfrozen training'))
     if freezing: 
         # Freeze entire network - LIV
         net.collect_params().setattr('grad_req', 'null')
 
         # Unfreeze conv1 layer in these non res blocks
-        non_res_blocks = list(range(6, 9))
-        stack = 3 # Which stack in which to unfreeze layers
+        non_res_blocks = list(range(0, 3))
+        stack = 1 # Which stack to unfreeze layers in
+        # Adjust above two lines to modify which layers to unfreeze
+
         num_blocks = len(non_res_blocks) # Num blocks in the stack to unfreeze
-        start_layer = 0 # Layer at which to start unfreezing
+        start_layer = 0 # Block at which to start unfreezing
         for i in range(num_blocks):
             j = str(start_layer + i)
             stk = str(stack)
@@ -191,24 +194,43 @@ def prepare_model(model_name,
             if params.grad_req == 'write':
                 num_unfrozen_params += 1
         
-        print('num_unfrozen_params =', num_unfrozen_params)
 
     # Write weights to file (npz compressed version)
-    output_weights = False 
-    if output_weights:
-        # Write conv1 and conv2 weights of 1st resblock into file
-        conv1_wts = list(net.features)[1][0].body.conv1.conv.weight.data()
-        conv2_wts = list(net.features)[1][0].body.conv2.conv.weight.data()
-
-        # conv1_wts is of dimension 16x16x3x3
-        with open('nonresblock1-conv1-wts.npz', 'wb') as f:
-            np.savez_compressed(f, conv1_wts)
-
-        with open('nonresblock1-conv2-wts.npz', 'wb') as f:
-            np.savez_compressed(f, conv2_wts)
-
-
+    # write_weights_and_bn(net)
+   
     return net
+
+
+
+"""
+Write weights and batch norm arrays into an npz file
+in the order: weights, beta, gamma, mean, invstd
+This order is what finnthesizer expects when generating
+weights and activation thresholds for finn-hls
+"""
+def write_weights_and_bn(net):
+    vals = []
+    # Write conv1 and conv2 weights of 1st resblock into file
+    conv1 = list(net.features)[1][0].body.conv1
+    # NOTE conv1_wts is of dimension 16x16x3x3
+    print('conv1 shape =', conv1.conv.weight.shape)
+    vals.append(conv1.conv.weight.data().asnumpy())
+    vals.append(conv1.bn.beta.data().asnumpy())
+    vals.append(conv1.bn.gamma.data().asnumpy())
+    vals.append(conv1.bn.running_mean.data().asnumpy())
+    print('conv1 bn running mean\n', conv1.bn.running_mean.data().asnumpy())
+    print('conv1.bn.running_var\n', conv1.bn.running_var.data().asnumpy())
+    invstd = np.reciprocal(np.sqrt(conv1.bn.running_var.data().asnumpy()))
+    print('invstd =', invstd)
+    # vals.append(conv1.bn.running_var)
+
+
+    # conv2_wts = list(net.features)[1][0].body.conv2.conv.weight
+    # vals.append(conv2_wts.data())
+
+    # with open('nonres20block1.npz', 'wb') as f:
+    #     np.savez_compressed(f, vals)
+
 
 
 def calc_net_weight_count(net):
