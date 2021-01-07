@@ -331,20 +331,36 @@ def run_one_resblock(net):
     features = list(net.features)
     # Input shape is (batch_size, color_channels, height, width)
     random_input = nd.random.uniform(-1, 1, shape=(1, 3, 32, 32))
-    print('random_input')
-    print(random_input)
+    print('random_input shape')
+    print(random_input.shape)
     # Pass input through first convblock
     res_input = features[0](random_input)
     # Pass residual block input through first residual block
     res_output = features[1](res_input)
 
-    print('res_input')
-    print(res_input)
+    print('res_input shape')
+    print(res_input.shape)
     print('res_output')
-    print(res_output)
+    print(res_output.shape)
 
     # Save res_input and res_output to csv
-    
+    # write_to_csv(res_input, 'input.csv')
+    # write_to_csv(res_output, 'output.csv')
+
+"""
+Write data to csv (assume data is 4-dimensional)
+"""
+def write_to_csv(data, filename):
+    import csv 
+    with open(filename, 'w+', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        for batch in data:
+            for channel in batch:
+                for row in channel:
+                    for val in row:
+                        # print(val.asnumpy())
+                        csvfile.write(str(val.asnumpy()[0]))
+                        csvfile.write(',')
 
 
 def main():
