@@ -170,7 +170,7 @@ def prepare_model(model_name,
         net.collect_params().setattr('grad_req', 'null')
 
         # Unfreeze conv1 layer in these non res blocks
-        stack = 2 # Which stack to unfreeze layers in
+        stack = 3 # Which stack to unfreeze layers in
         num_blocks = 3 # Num resblocks in the stack to unfreeze
         start_layer = 0 # Block at which to start unfreezing
         # Adjust above three lines to modify which layers to unfreeze
