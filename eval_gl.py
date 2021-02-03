@@ -283,7 +283,7 @@ def test_model(args):
 
     # Generate random input to a single residual block
     # and compute its output
-    run_one_resblock(net)
+    # run_one_resblock(net)
 
     get_test_data_source_class = get_val_data_source if args.data_subset == "val" else get_test_data_source
     test_data = get_test_data_source_class(

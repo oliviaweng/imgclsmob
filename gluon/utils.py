@@ -163,7 +163,7 @@ def prepare_model(model_name,
                 continue
             param.initialize(initializer, ctx=ctx)
 
-    freezing = True
+    freezing = False
     print('{}'.format('frozen training' if freezing else 'unfrozen training'))
     if freezing: 
         # Freeze entire network - LIV
